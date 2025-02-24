@@ -149,13 +149,13 @@ function AdmVeiculos() {
                         className="btn btn-warning me-2"
                         onClick={() => handleEdit(veiculo)}
                       >
-                        <FaEdit /> Editar
+                        <FaEdit />
                       </button>
                       <button
                         className="btn btn-danger"
                         onClick={() => handleDelete(veiculo.id)}
                       >
-                        <FaTrash /> Excluir
+                        <FaTrash />
                       </button>
                     </td>
                   </tr>

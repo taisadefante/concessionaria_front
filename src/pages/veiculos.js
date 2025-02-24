@@ -191,7 +191,7 @@ function Veiculos() {
                           </button>
                           <a
                             href={generateWhatsAppLink(veiculo)}
-                            className="btn btn-success"
+                            className="btn btn-success ms-2"
                           >
                             <FaWhatsapp /> Fale Conosco
                           </a>

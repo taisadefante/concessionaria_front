@@ -15,22 +15,30 @@ function Footer() {
           .footer {
             background-color: #343a40;
             color: #fff;
-            padding: 20px 0;
+            padding: 15px 0;
             text-align: center;
             position: relative;
             width: 100%;
             bottom: 0;
           }
 
-          /* 🔹 Garante que o Footer fique sempre no final */
-          .page-container {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+          .text-center {
+            font-size: 1rem; /* 🔹 Define o tamanho base */
+            max-width: 90%; /* 🔹 Garante que o texto não ultrapasse a largura */
+            margin: 0 auto; /* 🔹 Centraliza o texto */
           }
 
-          .content-wrap {
-            flex: 1;
+          /* 🔹 Tamanhos responsivos para diferentes telas */
+          @media (max-width: 768px) {
+            .text-center {
+              font-size: 0.9rem; /* 🔹 Reduz um pouco em tablets */
+            }
+          }
+
+          @media (max-width: 480px) {
+            .text-center {
+              font-size: 0.75rem; /* 🔹 Reduz mais em telas pequenas */
+            }
           }
         `}
       </style>
