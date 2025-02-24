@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { FaBeer } from "react-icons/fa";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
