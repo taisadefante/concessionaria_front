@@ -18,10 +18,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
 
   useEffect(() => {
     if (editingVeiculo) {
-      setFormData({
-        ...editingVeiculo,
-        images: [],
-      });
+      setFormData({ ...editingVeiculo, images: [] });
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 300);
@@ -71,31 +68,24 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     });
 
     try {
-      let response;
       if (editingVeiculo) {
-        response = await fetch(
-          `${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`,
-          {
-            method: "PUT",
-            body: data,
-          }
-        );
+        await fetch(`${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`, {
+          method: "PUT",
+          body: data,
+        });
+        alert("✅ Veículo atualizado com sucesso!");
       } else {
-        response = await fetch(`${API_BASE_URL}/api/vehicles`, {
+        await fetch(`${API_BASE_URL}/api/vehicles`, {
           method: "POST",
           body: data,
         });
+        alert("✅ Veículo cadastrado com sucesso!");
       }
 
-      if (!response.ok) throw new Error("Erro ao salvar veículo.");
-
-      alert("✅ Veículo salvo com sucesso!");
-
-      resetForm(); // 🔹 Reseta o formulário após o cadastro
-      onSubmit(); // 🔹 Atualiza a lista de veículos automaticamente
+      resetForm();
+      onSubmit();
     } catch (error) {
       alert("❌ Erro ao salvar veículo.");
-      console.error(error);
     }
   };
 
@@ -181,9 +171,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           onChange={handleChange}
         />
 
-        <label className="form-label">
-          Imagens do Veículo (Múltiplas imagens permitidas)
-        </label>
+        <label className="form-label">Imagens do Veículo</label>
         <input
           className="form-control mb-3"
           type="file"
