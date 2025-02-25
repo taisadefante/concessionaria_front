@@ -95,8 +95,13 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     <div className="container mt-4" ref={formRef} style={{ maxWidth: "100%" }}>
       <HeaderAdm />
       <h2
-        className="mt-4 text-center"
-        style={{ marginBottom: "15px", fontWeight: "bold", color: "#333" }}
+        className="mt-4 text-center fs-3"
+        style={{
+          marginBottom: "15px",
+          fontWeight: "bold",
+          color: "#333",
+          fontSize: "28px",
+        }}
       >
         Cadastrar Veículo
       </h2>
