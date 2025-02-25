@@ -45,7 +45,7 @@ function Veiculos() {
     <section className="py-4 bg-light">
       <div className="container">
         <h2 className="text-center mb-4 fw-bold text-dark">
-          Todos os Veículos 🚗💨
+          Todos os Veículos... 🚗💨
         </h2>
 
         <div className="row">
