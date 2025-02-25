@@ -39,38 +39,6 @@ function Veiculos() {
     }
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const applyFilters = () => {
-    let filtered = [...veiculos];
-
-    if (filters.minPrice) {
-      filtered = filtered.filter(
-        (v) => parseFloat(v.price) >= parseFloat(filters.minPrice)
-      );
-    }
-    if (filters.maxPrice) {
-      filtered = filtered.filter(
-        (v) => parseFloat(v.price) <= parseFloat(filters.maxPrice)
-      );
-    }
-    if (filters.search) {
-      filtered = filtered.filter((v) =>
-        v.carName.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
-    if (filters.maxKm) {
-      filtered = filtered.filter(
-        (v) => parseInt(v.mileage) <= parseInt(filters.maxKm)
-      );
-    }
-
-    setFilteredVehicles(filtered);
-  };
-
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
     if (veiculo?.images?.length > 0) {
@@ -95,7 +63,7 @@ function Veiculos() {
     🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
     💰 Preço: R$ ${veiculo.price.toLocaleString()}
     📌 Opcionais: ${veiculo.options || "Nenhum"}
-    📝 Descrição: ${veiculo.description || "Não informado"}`;
+    📝 Descrição: ${veiculo.description || "Não informada"}`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
@@ -104,12 +72,8 @@ function Veiculos() {
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
         <h2
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            textAlign: "center",
-          }}
+          className="text-center"
+          style={{ marginBottom: "15px", fontWeight: "bold", color: "#333" }}
         >
           Todos os Veículos 🚗💨
         </h2>
@@ -138,7 +102,6 @@ function Veiculos() {
                           Sem Imagem
                         </div>
                       )}
-
                       <div className="card-body text-center">
                         <h5 className="card-title">{veiculo.carName}</h5>
                         <p className="card-text">
@@ -180,7 +143,7 @@ function Veiculos() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
-                {/* 🔹 Coluna da Imagem Principal com Carrossel */}
+                {/* 🔹 Carrossel de Imagens */}
                 <div className="col-md-6 text-center">
                   {selectedVehicle.images?.length > 0 ? (
                     <Carousel>
@@ -203,6 +166,29 @@ function Veiculos() {
                       Sem Imagem
                     </div>
                   )}
+
+                  {/* 🔹 Miniaturas das Imagens */}
+                  <div className="d-flex justify-content-center mt-3">
+                    {selectedVehicle.images?.map((img, index) => (
+                      <img
+                        key={index}
+                        src={`${API_BASE_URL}${img}`}
+                        alt={`Imagem ${index + 1}`}
+                        className="img-thumbnail mx-1"
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                          cursor: "pointer",
+                          border:
+                            mainImage === `${API_BASE_URL}${img}`
+                              ? "2px solid #007bff"
+                              : "none",
+                        }}
+                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
+                      />
+                    ))}
+                  </div>
                 </div>
 
                 {/* 🔹 Coluna com Informações do Veículo */}

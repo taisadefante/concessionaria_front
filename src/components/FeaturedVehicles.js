@@ -157,19 +157,21 @@ function FeaturedVehicles() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
-                {/* 🔹 Coluna da Imagem Principal */}
+                {/* 🔹 Carrossel de Imagens */}
                 <div className="col-md-6 text-center">
-                  {mainImage ? (
-                    <img
-                      src={mainImage}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                      style={{
-                        maxHeight: "300px",
-                        objectFit: "cover",
-                        width: "100%",
-                      }}
-                    />
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      {selectedVehicle.images.map((img, index) => (
+                        <Carousel.Item key={index}>
+                          <img
+                            src={`${API_BASE_URL}${img}`}
+                            className="d-block w-100 rounded"
+                            alt={`Imagem ${index + 1}`}
+                            style={{ maxHeight: "300px", objectFit: "cover" }}
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
                   ) : (
                     <div
                       className="bg-secondary text-white d-flex align-items-center justify-content-center"
@@ -206,19 +208,27 @@ function FeaturedVehicles() {
                 {/* 🔹 Coluna com Informações do Veículo */}
                 <div className="col-md-6">
                   <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
+                    <strong>Marca:</strong> {selectedVehicle.brand}
                   </p>
                   <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
+                    <strong>Modelo:</strong> {selectedVehicle.model}
                   </p>
                   <p>
                     <strong>Ano:</strong> {selectedVehicle.year}
                   </p>
                   <p>
+                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
                     <strong>Cor:</strong> {selectedVehicle.color}
                   </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Preço:</strong> R$ {selectedVehicle.price}
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong>{" "}
+                    {selectedVehicle.description || "Não informada"}
                   </p>
                   <a
                     href={generateWhatsAppLink(selectedVehicle)}
