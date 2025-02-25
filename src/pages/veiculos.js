@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Carousel, Form } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
-import API_BASE_URL from "../services/api"; // Importando URL da API
+import API_BASE_URL from "../services/api";
 
 function Veiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -82,8 +82,7 @@ function Veiculos() {
     📅 Ano: ${veiculo.year}
     🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
     💰 Preço: R$ ${veiculo.price.toLocaleString()}
-    📌 Opcionais: ${veiculo.options || "Nenhum"}
-    🔍 Descrição: ${veiculo.description}`;
+    📌 Opcionais: ${veiculo.options || "Nenhum"}`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
@@ -153,26 +152,19 @@ function Veiculos() {
             ) : (
               <div className="row">
                 {filteredVehicles.map((veiculo) => (
-                  <div
-                    key={veiculo.id}
-                    className="col-lg-4 col-md-6 col-sm-12 mb-4"
-                  >
+                  <div key={veiculo.id} className="col-md-4 mb-4">
                     <div className="card shadow-sm">
                       {veiculo.images?.length > 0 ? (
                         <img
                           src={`${API_BASE_URL}${veiculo.images[0]}`}
                           className="card-img-top"
                           alt={veiculo.carName}
-                          style={{
-                            width: "100%",
-                            height: "180px",
-                            objectFit: "cover",
-                          }}
+                          style={{ height: "200px", objectFit: "cover" }}
                         />
                       ) : (
                         <div
                           className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                          style={{ height: "180px" }}
+                          style={{ height: "200px" }}
                         >
                           Sem Imagem
                         </div>
@@ -219,28 +211,40 @@ function Veiculos() {
               <Modal.Title>{selectedVehicle.carName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <img
-                src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
-                className="img-fluid rounded mb-3"
-                alt={selectedVehicle.carName}
-              />
-              <p>
-                <strong>Modelo:</strong> {selectedVehicle.model}
-              </p>
-              <p>
-                <strong>Ano:</strong> {selectedVehicle.year}
-              </p>
-              <p>
-                <strong>Cor:</strong> {selectedVehicle.color}
-              </p>
-              <p>
-                <strong>Quilometragem:</strong>{" "}
-                {selectedVehicle.mileage.toLocaleString()} km
-              </p>
-              <p>
-                <strong>Preço:</strong> R${" "}
-                {selectedVehicle.price.toLocaleString()}
-              </p>
+              <div className="row">
+                <div className="col-md-6">
+                  {selectedVehicle.images?.length > 0 && (
+                    <img
+                      src={`${API_BASE_URL}${selectedVehicle.images[0]}`}
+                      className="img-fluid rounded"
+                      alt={selectedVehicle.carName}
+                    />
+                  )}
+                </div>
+                <div className="col-md-6">
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>KM:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p className="fw-bold text-danger">
+                    <strong>Preço:</strong> R$ {selectedVehicle.price}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
+                </div>
+              </div>
             </Modal.Body>
           </>
         )}
