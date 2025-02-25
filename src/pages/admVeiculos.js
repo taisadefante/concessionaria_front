@@ -3,6 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Table, Alert, Button } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import API_BASE_URL from "../services/api";
+import HeaderAdm from "../components/Headeradm";
 
 function AdmVeiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -27,6 +28,7 @@ function AdmVeiculos() {
 
   return (
     <div className="container my-5">
+      <HeaderAdm />
       {alertMessage && (
         <Alert variant={alertMessage.type}>{alertMessage.text}</Alert>
       )}
