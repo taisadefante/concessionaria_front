@@ -146,24 +146,77 @@ function Veiculos() {
           </aside>
 
           {/* Lista de Veículos */}
+
           <div className="col-lg-9 col-md-8 col-sm-12">
-            {filteredVehicles.length === 0 ? (
-              <p className="text-center">Nenhum veículo encontrado.</p>
+            {displayedVehicles.length === 0 ? (
+              <p className="text-center">
+                Nenhum veículo disponível no momento.
+              </p>
+            ) : isMobile ? (
+              <Carousel indicators={false} interval={3000}>
+                {displayedVehicles.map((veiculo) => (
+                  <Carousel.Item key={veiculo.id}>
+                    <div className="d-flex justify-content-center">
+                      <div
+                        className="card shadow-sm"
+                        style={{ maxWidth: "90%" }}
+                      >
+                        {veiculo.images?.length > 0 ? (
+                          <img
+                            src={`http://localhost:3001${veiculo.images[0]}`}
+                            className="card-img-top"
+                            alt={veiculo.carName}
+                            style={{ height: "200px", objectFit: "cover" }}
+                          />
+                        ) : (
+                          <div
+                            className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                            style={{ height: "200px" }}
+                          >
+                            Sem Imagem
+                          </div>
+                        )}
+
+                        <div className="card-body text-center">
+                          <h5 className="card-title">{veiculo.carName}</h5>
+                          <p className="card-text">
+                            {veiculo.model} - {veiculo.year} - {veiculo.color}
+                          </p>
+                          <p className="fw-bold text-danger">
+                            R$ {veiculo.price.toLocaleString()}
+                          </p>
+
+                          <div className="d-flex justify-content-center gap-2">
+                            <button
+                              className="btn btn-dark btn-sm"
+                              onClick={() => handleShowModal(veiculo)}
+                            >
+                              Detalhes
+                            </button>
+                            <a
+                              href={generateWhatsAppLink(veiculo)}
+                              className="btn btn-success btn-sm d-flex align-items-center"
+                            >
+                              <FaWhatsapp className="me-1" /> WhatsApp
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Carousel.Item>
+                ))}
+              </Carousel>
             ) : (
               <div className="row">
-                {filteredVehicles.map((veiculo) => (
+                {displayedVehicles.map((veiculo) => (
                   <div key={veiculo.id} className="col-md-4 mb-4">
                     <div className="card shadow-sm">
                       {veiculo.images?.length > 0 ? (
                         <img
-                          src={`${API_BASE_URL}${veiculo.images[0]}`}
+                          src={`http://localhost:3001${veiculo.images[0]}`}
                           className="card-img-top"
                           alt={veiculo.carName}
                           style={{ height: "200px", objectFit: "cover" }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/images/no-image.png"; // Fallback se imagem não carregar
-                          }}
                         />
                       ) : (
                         <div
@@ -203,52 +256,70 @@ function Veiculos() {
                 ))}
               </div>
             )}
+
+            <div className="text-center mt-4">
+              <button className="btn btn-warning" onClick={goToVehiclesPage}>
+                🚘 Veja Todos os Nossos Veículos
+              </button>
+            </div>
           </div>
+
+          {/* 🔹 Modal atualizada com informações no lado direito */}
+          <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+            {selectedVehicle && (
+              <>
+                <Modal.Header closeButton>
+                  <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="row">
+                    <div className="col-md-6">
+                      {selectedVehicle.images?.length > 0 && (
+                        <img
+                          src={`http://localhost:3001${selectedVehicle.images[0]}`}
+                          className="img-fluid rounded"
+                          alt={selectedVehicle.carName}
+                        />
+                      )}
+                    </div>
+                    <div className="col-md-6">
+                      <p>
+                        <strong>Marca:</strong> {selectedVehicle.brand}
+                      </p>
+                      <p>
+                        <strong>Modelo:</strong> {selectedVehicle.model}
+                      </p>
+                      <p>
+                        <strong>Ano:</strong> {selectedVehicle.year}
+                      </p>
+                      <p>
+                        <strong>Cor:</strong> {selectedVehicle.color}
+                      </p>
+                      <p>
+                        <strong>KM:</strong> {selectedVehicle.mileage} km
+                      </p>
+                      <p>
+                        <strong>Opcionais:</strong>{" "}
+                        {selectedVehicle.options || "Nenhum"}
+                      </p>
+                      <p className="fw-bold text-danger">
+                        <strong>Preço:</strong> R$ {selectedVehicle.price}
+                      </p>
+                      <a
+                        href={generateWhatsAppLink(selectedVehicle)}
+                        className="btn btn-success w-100"
+                      >
+                        <FaWhatsapp className="me-1" /> Fale Conosco
+                      </a>
+                    </div>
+                  </div>
+                </Modal.Body>
+              </>
+            )}
+          </Modal>
         </div>
       </div>
-
-      {/* Modal de Detalhes */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
-                <div className="col-md-6">
-                  {selectedVehicle.images?.length > 0 && (
-                    <img
-                      src={`${API_BASE_URL}${selectedVehicle.images[0]}`}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                    />
-                  )}
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>KM:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Preço:</strong> R$ {selectedVehicle.price}
-                  </p>
-                </div>
-              </div>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
-
 export default Veiculos;
