@@ -65,30 +65,14 @@ function FeaturedVehicles() {
         {displayedVehicles.length === 0 ? (
           <p className="text-center">Nenhum veículo disponível no momento.</p>
         ) : isMobile ? (
-          // 🔹 Exibir apenas um card por vez no carrossel no Mobile
-          <Carousel
-            indicators={false}
-            interval={3000}
-            nextIcon={
-              <span
-                className="carousel-control-next-icon"
-                style={{ filter: "invert(50%)" }}
-              />
-            }
-            prevIcon={
-              <span
-                className="carousel-control-prev-icon"
-                style={{ filter: "invert(50%)" }}
-              />
-            }
-          >
+          <Carousel indicators={false} interval={3000}>
             {displayedVehicles.map((veiculo) => (
               <Carousel.Item key={veiculo.id}>
                 <div className="d-flex justify-content-center">
                   <div className="card shadow-sm" style={{ maxWidth: "90%" }}>
-                    {veiculo.images && veiculo.images.length > 0 ? (
+                    {veiculo.images?.length > 0 ? (
                       <img
-                        src={`http://localhost:3001${veiculo.images[0]}`} // 🔹 Corrigido acesso à imagem
+                        src={`http://localhost:3001${veiculo.images[0]}`}
                         className="card-img-top"
                         alt={veiculo.carName}
                         style={{ height: "200px", objectFit: "cover" }}
@@ -136,9 +120,9 @@ function FeaturedVehicles() {
             {displayedVehicles.map((veiculo) => (
               <div key={veiculo.id} className="col-md-4 mb-4">
                 <div className="card shadow-sm">
-                  {veiculo.images && veiculo.images.length > 0 ? (
+                  {veiculo.images?.length > 0 ? (
                     <img
-                      src={`http://localhost:3001${veiculo.images[0]}`} // 🔹 Corrigido acesso à imagem
+                      src={`http://localhost:3001${veiculo.images[0]}`}
                       className="card-img-top"
                       alt={veiculo.carName}
                       style={{ height: "200px", objectFit: "cover" }}
@@ -185,20 +169,20 @@ function FeaturedVehicles() {
         <div className="text-center mt-4">
           <button
             className="btn btn-warning"
+            onClick={goToVehiclesPage}
             style={{
               padding: "10px 20px",
               fontSize: "1.2rem",
               fontWeight: "bold",
               borderRadius: "5px",
             }}
-            onClick={goToVehiclesPage}
           >
             🚘 Veja Todos os Nossos Veículos
           </button>
         </div>
       </div>
 
-      {/* Modal de Detalhes */}
+      {/* 🔹 Modal restaurada ao formato original */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
@@ -208,11 +192,36 @@ function FeaturedVehicles() {
             <Modal.Body>
               <div className="row">
                 <div className="col-md-6">
-                  <img
-                    src={`http://localhost:3001${selectedVehicle.images?.[0]}`} // 🔹 Corrigido acesso à imagem
-                    className="img-fluid rounded"
-                    alt={selectedVehicle.carName}
-                  />
+                  {selectedVehicle.images?.length > 0 ? (
+                    <img
+                      src={`http://localhost:3001${selectedVehicle.images[0]}`}
+                      className="img-fluid rounded"
+                      alt={selectedVehicle.carName}
+                    />
+                  ) : (
+                    <p className="text-center">Nenhuma imagem disponível</p>
+                  )}
+                </div>
+                <div className="col-md-6">
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>Preço:</strong> R${" "}
+                    {selectedVehicle.price.toLocaleString()}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100 mt-3"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
                 </div>
               </div>
             </Modal.Body>
