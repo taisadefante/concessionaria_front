@@ -3,6 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Table, Alert, Button } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import API_BASE_URL from "../services/api";
+import HeaderAdm from "../components/Headeradm";
 
 function AdmVeiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -13,7 +14,6 @@ function AdmVeiculos() {
     fetchVeiculos();
   }, []);
 
-  // 🔹 Função para buscar veículos do backend
   const fetchVeiculos = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
@@ -26,29 +26,16 @@ function AdmVeiculos() {
     }
   };
 
-  // 🔹 Função para excluir um veículo
   const handleDelete = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir este veículo?")) {
-      try {
-        await fetch(`${API_BASE_URL}/api/vehicles/${id}`, {
-          method: "DELETE",
-        });
-        setAlertMessage({
-          type: "success",
-          text: "✅ Veículo excluído com sucesso!",
-        });
-        fetchVeiculos(); // Atualiza a lista
-      } catch (error) {
-        setAlertMessage({
-          type: "danger",
-          text: "❌ Erro ao excluir veículo.",
-        });
-      }
+      await fetch(`${API_BASE_URL}/api/vehicles/${id}`, { method: "DELETE" });
+      fetchVeiculos();
     }
   };
 
   return (
-    <div className="container my-5">
+    <div className="container-fluid my-5">
+      <HeaderAdm />
       {alertMessage && (
         <Alert variant={alertMessage.type}>{alertMessage.text}</Alert>
       )}
@@ -65,9 +52,9 @@ function AdmVeiculos() {
           bordered
           hover
           className="text-center mt-4"
-          style={{ minWidth: "1200px" }}
+          style={{ width: "100%" }}
         >
-          <thead>
+          <thead className="table-dark">
             <tr>
               <th>Imagem</th>
               <th>Nome</th>
@@ -91,7 +78,6 @@ function AdmVeiculos() {
                       src={`${API_BASE_URL}${veiculo.images[0]}`}
                       width="100"
                       alt="veículo"
-                      style={{ objectFit: "cover", borderRadius: "5px" }}
                     />
                   ) : (
                     <div
@@ -99,12 +85,6 @@ function AdmVeiculos() {
                         width: "100px",
                         height: "100px",
                         backgroundColor: "#ccc",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderRadius: "5px",
-                        fontWeight: "bold",
-                        color: "#666",
                       }}
                     >
                       Sem Imagem

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import API_BASE_URL from "../services/api";
 import HeaderAdm from "../components/Headeradm";
 
-function VeiculoForm({ onSubmit }) {
+function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
   const formRef = useRef(null);
   const [formData, setFormData] = useState({
     carName: "",
@@ -17,6 +17,17 @@ function VeiculoForm({ onSubmit }) {
     images: [],
   });
 
+  useEffect(() => {
+    if (editingVeiculo) {
+      setFormData({ ...editingVeiculo, images: [] });
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    } else {
+      resetForm();
+    }
+  }, [editingVeiculo]);
+
   const resetForm = () => {
     setFormData({
       carName: "",
@@ -30,14 +41,16 @@ function VeiculoForm({ onSubmit }) {
       options: "",
       images: [],
     });
+    setEditingVeiculo(null);
   };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files && files.length > 0) {
+
+    if (files) {
       setFormData((prev) => ({
         ...prev,
-        images: Array.from(files),
+        images: [...prev.images, ...Array.from(files)],
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -57,12 +70,20 @@ function VeiculoForm({ onSubmit }) {
     });
 
     try {
-      await fetch(`${API_BASE_URL}/api/vehicles`, {
-        method: "POST",
-        body: data,
-        headers: { Accept: "application/json" },
-      });
-      alert("✅ Veículo cadastrado com sucesso!");
+      if (editingVeiculo) {
+        await fetch(`${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`, {
+          method: "PUT",
+          body: data,
+        });
+        alert("✅ Veículo atualizado com sucesso!");
+      } else {
+        await fetch(`${API_BASE_URL}/api/vehicles`, {
+          method: "POST",
+          body: data,
+        });
+        alert("✅ Veículo cadastrado com sucesso!");
+      }
+
       resetForm();
       onSubmit();
     } catch (error) {
@@ -71,58 +92,102 @@ function VeiculoForm({ onSubmit }) {
   };
 
   return (
-    <div className="container mt-4" ref={formRef}>
+    <div className="container mt-4" ref={formRef} style={{ maxWidth: "100%" }}>
       <HeaderAdm />
-      <h2
-        style={{
-          marginBottom: "15px",
-          fontWeight: "bold",
-          color: "#333",
-          textAlign: "center",
-        }}
-      >
-        Cadastrar Veículo
-      </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 border rounded"
-        encType="multipart/form-data"
-      >
-        <input
-          className="form-control mb-2"
-          type="text"
-          name="carName"
-          placeholder="Nome do Veículo"
-          value={formData.carName}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          className="form-control mb-2"
-          name="description"
-          placeholder="Descrição"
-          value={formData.description}
-          onChange={handleChange}
-        />
-        <input
-          className="form-control mb-2"
-          type="number"
-          name="price"
-          placeholder="Valor"
-          value={formData.price}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="form-control mb-2"
-          type="file"
-          name="images"
-          onChange={handleChange}
-          accept="image/*"
-          multiple
-        />
+      <h2 className="text-center">Cadastrar Veículo</h2>
+      <form onSubmit={handleSubmit} className="p-4 border rounded bg-light">
+        <div className="row">
+          <div className="col-md-6">
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="carName"
+              placeholder="Nome do Veículo"
+              value={formData.carName}
+              onChange={handleChange}
+              required
+            />
+            <textarea
+              className="form-control mb-2"
+              name="description"
+              placeholder="Descrição"
+              value={formData.description}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              type="number"
+              name="price"
+              placeholder="Valor"
+              value={formData.price}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              type="number"
+              name="year"
+              placeholder="Ano"
+              value={formData.year}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="brand"
+              placeholder="Marca"
+              value={formData.brand}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="col-md-6">
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="model"
+              placeholder="Modelo"
+              value={formData.model}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control mb-2"
+              type="number"
+              name="mileage"
+              placeholder="Quilometragem"
+              value={formData.mileage}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="color"
+              placeholder="Cor"
+              value={formData.color}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-2"
+              type="text"
+              name="options"
+              placeholder="Opcionais"
+              value={formData.options}
+              onChange={handleChange}
+            />
+            <input
+              className="form-control mb-3"
+              type="file"
+              name="images"
+              onChange={handleChange}
+              accept="image/*"
+              multiple
+            />
+          </div>
+        </div>
         <button type="submit" className="btn btn-primary w-100">
-          Cadastrar
+          {editingVeiculo ? "Atualizar" : "Cadastrar"}
         </button>
       </form>
     </div>

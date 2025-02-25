@@ -6,6 +6,7 @@ import Testimonials from "../components/Testimonials";
 import ContactForm from "../components/ContactForm";
 import MapaLocalizacao from "../components/MapaLocalizacao";
 import Banner2 from "../components/Banner2";
+import Sobre from "../pages/Sobre";
 
 function Home() {
   return (
@@ -14,6 +15,7 @@ function Home() {
       <FeaturedVehicles />
       <Services />
       <Testimonials />
+      <Sobre />
       <Banner2 />
       <ContactForm />
       <MapaLocalizacao />
