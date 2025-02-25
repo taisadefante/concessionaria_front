@@ -68,8 +68,16 @@ function FeaturedVehicles() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2 className="text-center mb-4">Veículos em Destaque</h2>
-
+        <h2
+          style={{
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "#333",
+            textAlign: "center",
+          }}
+        >
+          Veículos em Destaque
+        </h2>
         {displayedVehicles.length === 0 ? (
           <p className="text-center">Nenhum veículo disponível no momento.</p>
         ) : isMobile ? (
