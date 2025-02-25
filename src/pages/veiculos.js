@@ -9,6 +9,15 @@ function Veiculos() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [mainImage, setMainImage] = useState("");
+  const [filters, setFilters] = useState({
+    name: "",
+    model: "",
+    year: "",
+    minPrice: "",
+    maxPrice: "",
+    mileage: "",
+    brand: "",
+  });
 
   useEffect(() => {
     fetchVehicles();
@@ -18,12 +27,9 @@ function Veiculos() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       if (!res.ok) throw new Error(`Erro ao buscar veículos: ${res.status}`);
-
       const data = await res.json();
       if (!Array.isArray(data))
         throw new Error("Resposta da API não é um array.");
-
-      console.log("📌 Veículos carregados:", data);
       setVeiculos(data);
       setFilteredVehicles(data);
     } catch (error) {
@@ -33,13 +39,38 @@ function Veiculos() {
     }
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
+  useEffect(() => {
+    let filtered = veiculos.filter((veiculo) => {
+      return (
+        (filters.name === "" ||
+          veiculo.carName.toLowerCase().includes(filters.name.toLowerCase())) &&
+        (filters.model === "" ||
+          veiculo.model.toLowerCase().includes(filters.model.toLowerCase())) &&
+        (filters.year === "" ||
+          veiculo.year.toString().includes(filters.year)) &&
+        (filters.minPrice === "" ||
+          veiculo.price >= parseFloat(filters.minPrice)) &&
+        (filters.maxPrice === "" ||
+          veiculo.price <= parseFloat(filters.maxPrice)) &&
+        (filters.mileage === "" ||
+          veiculo.mileage.toString().includes(filters.mileage)) &&
+        (filters.brand === "" ||
+          veiculo.brand.toLowerCase().includes(filters.brand.toLowerCase()))
+      );
+    });
+    setFilteredVehicles(filtered);
+  }, [filters, veiculos]);
+
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
-    if (veiculo?.images?.length > 0) {
-      setMainImage(`${API_BASE_URL}${veiculo.images[0]}`);
-    } else {
-      setMainImage("");
-    }
+    setMainImage(
+      veiculo.images.length > 0 ? `${API_BASE_URL}${veiculo.images[0]}` : ""
+    );
     setShowModal(true);
   };
 
@@ -50,34 +81,90 @@ function Veiculos() {
   };
 
   const generateWhatsAppLink = (veiculo) => {
-    const phoneNumber = "+5521988359825";
-    const message = `Olá, estou interessado no veículo: ${veiculo.carName}.
-    🚗 Marca: ${veiculo.brand}
-    📅 Ano: ${veiculo.year}
-    🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
-    💰 Preço: R$ ${veiculo.price.toLocaleString()}
-    📌 Opcionais: ${veiculo.options || "Nenhum"}
-    📝 Descrição: ${veiculo.description || "Não informada"}`;
+    const phoneNumber = "21988359825";
+    const message = `Olá, estou interessado no veículo: ${veiculo.carName} (${
+      veiculo.year
+    }). 🚗 Marca: ${veiculo.brand} 📅 Ano: ${
+      veiculo.year
+    } 🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km 💰 Preço: R$ ${veiculo.price.toLocaleString()} 📌 Opcionais: ${
+      veiculo.options || "Nenhum"
+    }`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  };
+
+  const goToVehiclesPage = () => {
+    navigate("/veiculos");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
         <h2
-          className="mt-4 text-center fs-3"
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            fontSize: "28px",
-          }}
+          className="text-center fs-3"
+          style={{ fontWeight: "bold", color: "#333" }}
         >
           Todos os Veículos 🚗💨
         </h2>
         <div className="row">
-          <div className="col-lg-12 col-md-12 col-sm-12">
+          {/* Filtro */}
+          <div className="col-lg-3 col-md-4">
+            <div className="p-3 border bg-white">
+              <h5>Filtrar Veículos</h5>
+              <input
+                type="text"
+                name="name"
+                placeholder="Nome"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="model"
+                placeholder="Modelo"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="year"
+                placeholder="Ano"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="minPrice"
+                placeholder="Valor Mínimo"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="maxPrice"
+                placeholder="Valor Máximo"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="mileage"
+                placeholder="Quilometragem"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="brand"
+                placeholder="Marca"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+            </div>
+          </div>
+          {/* Lista de Veículos */}
+          <div className="col-lg-9 col-md-8">
             {filteredVehicles.length === 0 ? (
               <p className="text-center">Nenhum veículo encontrado.</p>
             ) : (
@@ -85,21 +172,12 @@ function Veiculos() {
                 {filteredVehicles.map((veiculo) => (
                   <div key={veiculo.id} className="col-md-4 mb-4">
                     <div className="card shadow-sm">
-                      {veiculo.images?.length > 0 ? (
-                        <img
-                          src={`${API_BASE_URL}${veiculo.images[0]}`}
-                          className="card-img-top"
-                          alt={veiculo.carName}
-                          style={{ height: "200px", objectFit: "cover" }}
-                        />
-                      ) : (
-                        <div
-                          className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                          style={{ height: "200px" }}
-                        >
-                          Sem Imagem
-                        </div>
-                      )}
+                      <img
+                        src={`${API_BASE_URL}${veiculo.images[0]}`}
+                        className="card-img-top"
+                        alt={veiculo.carName}
+                        style={{ height: "200px", objectFit: "cover" }}
+                      />
                       <div className="card-body text-center">
                         <h5 className="card-title">{veiculo.carName}</h5>
                         <p className="card-text">
@@ -108,20 +186,12 @@ function Veiculos() {
                         <p className="fw-bold text-danger">
                           R$ {veiculo.price.toLocaleString()}
                         </p>
-                        <div className="d-flex justify-content-center gap-2">
-                          <button
-                            className="btn btn-dark btn-sm"
-                            onClick={() => handleShowModal(veiculo)}
-                          >
-                            Detalhes
-                          </button>
-                          <a
-                            href={generateWhatsAppLink(veiculo)}
-                            className="btn btn-success btn-sm d-flex align-items-center"
-                          >
-                            <FaWhatsapp className="me-1" /> WhatsApp
-                          </a>
-                        </div>
+                        <button
+                          className="btn btn-dark btn-sm"
+                          onClick={() => handleShowModal(veiculo)}
+                        >
+                          Detalhes
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -131,8 +201,6 @@ function Veiculos() {
           </div>
         </div>
       </div>
-
-      {/* MODAL COM CARROSSEL E MINIATURAS */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
