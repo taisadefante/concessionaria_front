@@ -90,8 +90,16 @@ function Veiculos() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2 className="text-center mb-4 fw-bold">Todos os Veículos 🚗💨</h2>
-
+        <h2
+          style={{
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "#333",
+            textAlign: "center",
+          }}
+        >
+          Todos os Veículos 🚗💨
+        </h2>
         <div className="row">
           {/* Sidebar de Filtros */}
           <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
