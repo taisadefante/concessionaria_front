@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Table, Alert, Button } from "react-bootstrap";
+import { Table, Alert, Button, Carousel } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import API_BASE_URL from "../services/api";
 
@@ -54,7 +54,7 @@ function AdmVeiculos() {
         >
           <thead className="table-dark">
             <tr>
-              <th>Imagem</th>
+              <th>Imagens</th>
               <th>Nome</th>
               <th>Descrição</th>
               <th>Preço</th>
@@ -72,11 +72,19 @@ function AdmVeiculos() {
               <tr key={veiculo.id}>
                 <td>
                   {veiculo.images?.length > 0 ? (
-                    <img
-                      src={`${API_BASE_URL}${veiculo.images[0]}`}
-                      width="100"
-                      alt="veículo"
-                    />
+                    <Carousel indicators={false} interval={2000}>
+                      {veiculo.images.map((img, index) => (
+                        <Carousel.Item key={index}>
+                          <img
+                            src={`${API_BASE_URL}${img}`}
+                            width="100"
+                            height="70"
+                            alt={`Veículo ${index + 1}`}
+                            style={{ objectFit: "cover", borderRadius: "5px" }}
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
                   ) : (
                     <div
                       style={{
