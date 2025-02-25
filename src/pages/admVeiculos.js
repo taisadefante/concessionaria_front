@@ -3,7 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Alert, Table, Modal, Button, Carousel } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import HeaderAdm from "../components/Headeradm";
-import API_BASE_URL from "../services/api"; // 🔹 Importação correta da URL da API
+import API_BASE_URL from "../services/api"; // Importação da URL da API
 
 function AdmVeiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -24,7 +24,7 @@ function AdmVeiculos() {
       if (!res.ok) throw new Error("Erro ao buscar veículos");
 
       const data = await res.json();
-      console.log("🚗 Veículos carregados:", data); // Debugging
+      console.log("🚗 Veículos carregados:", data);
       setVeiculos(data);
     } catch (error) {
       console.error("❌ Erro ao buscar veículos:", error);
@@ -32,18 +32,24 @@ function AdmVeiculos() {
     }
   };
 
-  // 🔹 Excluir veículo
+  // 🔹 Excluir veículo e atualizar a lista
   const handleDelete = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir este veículo?")) {
       try {
-        await fetch(`${API_BASE_URL}/api/vehicles/${id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/vehicles/${id}`, {
           method: "DELETE",
         });
+
+        if (!res.ok) {
+          throw new Error("Erro ao excluir veículo");
+        }
+
         setAlertMessage({
           type: "success",
-          text: "✅ Veículo excluído com sucesso!",
+          text: "✅ Veículo e imagens excluídos com sucesso!",
         });
-        fetchVeiculos(); // Atualiza a lista
+
+        fetchVeiculos(); // Atualiza a lista de veículos
       } catch (error) {
         setAlertMessage({
           type: "danger",
@@ -129,11 +135,7 @@ function AdmVeiculos() {
                     <td>
                       {veiculo.images?.length > 0 ? (
                         <img
-                          src={
-                            veiculo.images[0].startsWith("http")
-                              ? veiculo.images[0]
-                              : `${API_BASE_URL}/${veiculo.images[0]}`
-                          }
+                          src={`${API_BASE_URL}${veiculo.images[0]}`} // 🔹 Corrigido para exibir corretamente
                           alt={veiculo.carName}
                           style={{
                             width: "150px",
@@ -179,6 +181,81 @@ function AdmVeiculos() {
           </div>
         )}
       </div>
+
+      {/* 🔹 Modal de Detalhes do Veículo */}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        size="lg"
+      >
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-5">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel indicators interval={2000}>
+                      {selectedVehicle.images.map((img, index) => (
+                        <Carousel.Item key={index}>
+                          <img
+                            src={`${API_BASE_URL}${img}`}
+                            className="img-fluid"
+                            alt={`Imagem ${index + 1}`}
+                            style={{
+                              borderRadius: "8px",
+                              maxHeight: "300px",
+                              objectFit: "cover",
+                              width: "100%",
+                            }}
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  ) : (
+                    <p className="text-center">Nenhuma imagem disponível</p>
+                  )}
+                </div>
+
+                <div className="col-md-7">
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>Quilometragem:</strong>{" "}
+                    {selectedVehicle.mileage.toLocaleString()} km
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p>
+                    <strong>Preço:</strong> R${" "}
+                    {selectedVehicle.price.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowModal(false)}>
+                Fechar
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </div>
   );
 }
