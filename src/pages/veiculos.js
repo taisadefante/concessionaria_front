@@ -108,31 +108,63 @@ function Veiculos() {
           <FaFilter /> Filtrar Veículos
         </Button>
 
+        {showFilters && (
+          <div className="p-3 bg-white shadow-sm rounded mb-4">
+            <h5>Filtrar Veículos</h5>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="Nome"
+              className="mb-2 form-control-sm"
+              onChange={handleFilterChange}
+            />
+            <Form.Control
+              type="text"
+              name="model"
+              placeholder="Modelo"
+              className="mb-2 form-control-sm"
+              onChange={handleFilterChange}
+            />
+            <Button variant="dark" className="w-100" onClick={applyFilters}>
+              Pesquisar
+            </Button>
+          </div>
+        )}
+
         <div className="row">
-          {showFilters && (
-            <aside className="col-lg-3 col-md-4 mb-4">
-              <div className="p-3 bg-white shadow-sm rounded">
-                <h5>Filtrar Veículos</h5>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  placeholder="Nome"
-                  className="mb-2 form-control-sm"
-                  onChange={handleFilterChange}
+          {filteredVehicles.map((veiculo) => (
+            <div key={veiculo.id} className="col-md-4 mb-4">
+              <div className="card shadow-sm h-100 d-flex flex-column">
+                <img
+                  src={`${API_BASE_URL}${veiculo.images?.[0]}`}
+                  className="card-img-top"
+                  alt={veiculo.carName}
                 />
-                <Form.Control
-                  type="text"
-                  name="model"
-                  placeholder="Modelo"
-                  className="mb-2 form-control-sm"
-                  onChange={handleFilterChange}
-                />
-                <Button variant="dark" className="w-100" onClick={applyFilters}>
-                  Pesquisar
-                </Button>
+                <div className="card-body text-center d-flex flex-column">
+                  <h5>{veiculo.carName}</h5>
+                  <p>
+                    {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
+                  </p>
+                  <div className="mt-auto d-flex justify-content-between gap-2">
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      onClick={() => handleShowModal(veiculo)}
+                    >
+                      Detalhes
+                    </Button>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      href={`https://wa.me/?text=Olá, estou interessado no ${veiculo.carName}`}
+                    >
+                      <FaWhatsapp /> Fale Conosco
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </aside>
-          )}
+            </div>
+          ))}
         </div>
       </div>
 
