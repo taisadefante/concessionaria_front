@@ -72,7 +72,7 @@ function AdmVeiculos() {
               <tr key={veiculo.id}>
                 <td>
                   {veiculo.images?.length > 0 ? (
-                    <Carousel indicators={false} interval={2000}>
+                    <Carousel indicators={false} interval={null}>
                       {veiculo.images.map((img, index) => (
                         <Carousel.Item key={index}>
                           <img
