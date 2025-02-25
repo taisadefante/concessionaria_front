@@ -73,7 +73,16 @@ function VeiculoForm({ onSubmit }) {
   return (
     <div className="container mt-4" ref={formRef}>
       <HeaderAdm />
-      <h2 className="text-center mb-4">Cadastrar Veículo</h2>
+      <h2
+        style={{
+          marginBottom: "15px",
+          fontWeight: "bold",
+          color: "#333",
+          textAlign: "center",
+        }}
+      >
+        Cadastrar Veículo
+      </h2>
       <form
         onSubmit={handleSubmit}
         className="p-4 border rounded"
