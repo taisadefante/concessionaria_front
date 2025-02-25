@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Carousel } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
 import API_BASE_URL from "../services/api";
 
@@ -14,7 +14,7 @@ function Veiculos() {
   });
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [mainImage, setMainImage] = useState(""); // Estado para a imagem principal
+  const [mainImage, setMainImage] = useState("");
 
   useEffect(() => {
     fetchVehicles();
@@ -26,14 +26,12 @@ function Veiculos() {
       if (!res.ok) throw new Error(`Erro ao buscar veículos: ${res.status}`);
 
       const data = await res.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error("Resposta da API não é um array de veículos.");
-      }
+      if (!Array.isArray(data))
+        throw new Error("Resposta da API não é um array.");
 
       console.log("📌 Veículos carregados:", data);
       setVeiculos(data);
-      setFilteredVehicles(data); // Agora realmente exibe todos os veículos cadastrados
+      setFilteredVehicles(data);
     } catch (error) {
       console.error("❌ Erro ao buscar veículos:", error);
       setVeiculos([]);
@@ -78,7 +76,7 @@ function Veiculos() {
     if (veiculo?.images?.length > 0) {
       setMainImage(`${API_BASE_URL}${veiculo.images[0]}`);
     } else {
-      setMainImage(""); // Caso não tenha imagens
+      setMainImage("");
     }
     setShowModal(true);
   };
@@ -86,20 +84,18 @@ function Veiculos() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedVehicle(null);
-    setMainImage(""); // Resetar a imagem principal ao fechar
+    setMainImage("");
   };
 
   const generateWhatsAppLink = (veiculo) => {
     const phoneNumber = "+5521988359825";
     const message = `Olá, estou interessado no veículo: ${veiculo.carName}.
     🚗 Marca: ${veiculo.brand}
-    📅 Modelo: ${veiculo.model}
     📅 Ano: ${veiculo.year}
     🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
-    🎨 Cor: ${veiculo.color}
-    🏆 Opcionais: ${veiculo.options || "Nenhum"}
-    📝 Descrição: ${veiculo.description || "Não informada"}
-    💰 Preço: R$ ${veiculo.price.toLocaleString()}`;
+    💰 Preço: R$ ${veiculo.price.toLocaleString()}
+    📌 Opcionais: ${veiculo.options || "Nenhum"}
+    📝 Descrição: ${veiculo.description || "Não informado"}`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
@@ -118,39 +114,8 @@ function Veiculos() {
           Todos os Veículos 🚗💨
         </h2>
         <div className="row">
-          {/* Sidebar de Filtros */}
-          <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
-            <div className="p-3 bg-white shadow-sm rounded">
-              <h5>Filtrar Veículos</h5>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Valor Mínimo (R$)</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="minPrice"
-                  value={filters.minPrice}
-                  onChange={handleFilterChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Valor Máximo (R$)</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="maxPrice"
-                  value={filters.maxPrice}
-                  onChange={handleFilterChange}
-                />
-              </Form.Group>
-
-              <Button variant="dark" className="w-100" onClick={applyFilters}>
-                Pesquisar
-              </Button>
-            </div>
-          </aside>
-
           {/* Lista de Veículos */}
-          <div className="col-lg-9 col-md-8 col-sm-12">
+          <div className="col-lg-12 col-md-12 col-sm-12">
             {filteredVehicles.length === 0 ? (
               <p className="text-center">Nenhum veículo encontrado.</p>
             ) : (
@@ -206,7 +171,7 @@ function Veiculos() {
         </div>
       </div>
 
-      {/* MODAL DE DETALHES COM MINIATURAS */}
+      {/* MODAL COM CARROSSEL E MINIATURAS */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
@@ -214,27 +179,65 @@ function Veiculos() {
               <Modal.Title>{selectedVehicle.carName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p>
-                <strong>Marca:</strong> {selectedVehicle.brand}
-              </p>
-              <p>
-                <strong>Modelo:</strong> {selectedVehicle.model}
-              </p>
-              <p>
-                <strong>Ano:</strong> {selectedVehicle.year}
-              </p>
-              <p>
-                <strong>KM:</strong> {selectedVehicle.mileage} km
-              </p>
-              <p>
-                <strong>Cor:</strong> {selectedVehicle.color}
-              </p>
-              <a
-                href={generateWhatsAppLink(selectedVehicle)}
-                className="btn btn-success w-100 mt-3"
-              >
-                <FaWhatsapp className="me-1" /> Fale Conosco
-              </a>
+              <div className="row">
+                {/* 🔹 Coluna da Imagem Principal com Carrossel */}
+                <div className="col-md-6 text-center">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      {selectedVehicle.images.map((img, index) => (
+                        <Carousel.Item key={index}>
+                          <img
+                            src={`${API_BASE_URL}${img}`}
+                            className="d-block w-100 rounded"
+                            alt={`Imagem ${index + 1}`}
+                            style={{ maxHeight: "300px", objectFit: "cover" }}
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+                </div>
+
+                {/* 🔹 Coluna com Informações do Veículo */}
+                <div className="col-md-6">
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong>{" "}
+                    {selectedVehicle.description || "Não informada"}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100 mt-3"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
+                </div>
+              </div>
             </Modal.Body>
           </>
         )}
