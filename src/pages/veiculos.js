@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Carousel } from "react-bootstrap";
-import { FaWhatsapp } from "react-icons/fa";
+import { Modal, Button, Carousel, Form, Collapse } from "react-bootstrap";
+import { FaWhatsapp, FaFilter } from "react-icons/fa";
 import API_BASE_URL from "../services/api";
 
 function Veiculos() {
@@ -8,6 +8,16 @@ function Veiculos() {
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+
+  const [filters, setFilters] = useState({
+    brand: "",
+    model: "",
+    minYear: "",
+    maxYear: "",
+    minPrice: "",
+    maxPrice: "",
+  });
 
   useEffect(() => {
     fetchVehicles();
@@ -41,13 +51,123 @@ function Veiculos() {
     setSelectedVehicle(null);
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters({ ...filters, [name]: value });
+  };
+
+  const applyFilters = () => {
+    let filtered = veiculos;
+
+    if (filters.brand) {
+      filtered = filtered.filter((v) =>
+        v.brand.toLowerCase().includes(filters.brand.toLowerCase())
+      );
+    }
+    if (filters.model) {
+      filtered = filtered.filter((v) =>
+        v.model.toLowerCase().includes(filters.model.toLowerCase())
+      );
+    }
+    if (filters.minYear) {
+      filtered = filtered.filter((v) => v.year >= parseInt(filters.minYear));
+    }
+    if (filters.maxYear) {
+      filtered = filtered.filter((v) => v.year <= parseInt(filters.maxYear));
+    }
+    if (filters.minPrice) {
+      filtered = filtered.filter(
+        (v) => v.price >= parseFloat(filters.minPrice)
+      );
+    }
+    if (filters.maxPrice) {
+      filtered = filtered.filter(
+        (v) => v.price <= parseFloat(filters.maxPrice)
+      );
+    }
+
+    setFilteredVehicles(filtered);
+  };
+
   return (
     <section className="py-4 bg-light">
       <div className="container">
         <h2 className="text-center mb-4 fw-bold text-dark">
-          Todos os Veículos... 🚗💨
+          Todos os Veículos 🚗💨
         </h2>
 
+        {/* BOTÃO DE FILTRO */}
+        <div className="mb-3 text-center">
+          <Button
+            variant="dark"
+            onClick={() => setShowFilters(!showFilters)}
+            aria-controls="filter-collapse"
+            aria-expanded={showFilters}
+          >
+            <FaFilter className="me-1" /> Filtrar Veículos
+          </Button>
+        </div>
+
+        {/* SEÇÃO DE FILTROS */}
+        <Collapse in={showFilters}>
+          <div id="filter-collapse" className="card card-body mb-4">
+            <div className="row">
+              <div className="col-md-3">
+                <Form.Group>
+                  <Form.Label>Marca</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="brand"
+                    value={filters.brand}
+                    onChange={handleFilterChange}
+                    placeholder="Digite a marca"
+                  />
+                </Form.Group>
+              </div>
+              <div className="col-md-3">
+                <Form.Group>
+                  <Form.Label>Modelo</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="model"
+                    value={filters.model}
+                    onChange={handleFilterChange}
+                    placeholder="Digite o modelo"
+                  />
+                </Form.Group>
+              </div>
+              <div className="col-md-3">
+                <Form.Group>
+                  <Form.Label>Ano Mínimo</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="minYear"
+                    value={filters.minYear}
+                    onChange={handleFilterChange}
+                    placeholder="Ano mínimo"
+                  />
+                </Form.Group>
+              </div>
+              <div className="col-md-3">
+                <Form.Group>
+                  <Form.Label>Ano Máximo</Form.Label>
+                  <Form.Control
+                    type="number"
+                    name="maxYear"
+                    value={filters.maxYear}
+                    onChange={handleFilterChange}
+                    placeholder="Ano máximo"
+                  />
+                </Form.Group>
+              </div>
+            </div>
+            <Button className="mt-3" variant="success" onClick={applyFilters}>
+              Aplicar Filtros
+            </Button>
+          </div>
+        </Collapse>
+
+        {/* LISTA DE VEÍCULOS */}
         <div className="row">
           {filteredVehicles.map((veiculo) => (
             <div key={veiculo.id} className="col-md-4 mb-4">
@@ -95,64 +215,26 @@ function Veiculos() {
               <Modal.Title>{selectedVehicle.carName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <div className="row">
-                <div className="col-md-6 text-center">
-                  {selectedVehicle.images?.length > 0 ? (
-                    <Carousel>
-                      {selectedVehicle.images.map((img, index) => (
-                        <Carousel.Item key={index}>
-                          <img
-                            src={`${API_BASE_URL}${img}`}
-                            className="d-block w-100 rounded"
-                            alt="Imagem principal"
-                            style={{ maxHeight: "300px", objectFit: "cover" }}
-                          />
-                        </Carousel.Item>
-                      ))}
-                    </Carousel>
-                  ) : (
-                    <div
-                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                      style={{ height: "300px" }}
-                    >
-                      Sem Imagem
-                    </div>
-                  )}
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p>
-                    <strong>Descrição:</strong>{" "}
-                    {selectedVehicle.description || "Não informada"}
-                  </p>
-                  <a
-                    href={`https://wa.me/21988359825?text=Olá, estou interessado no ${selectedVehicle.carName}`}
-                    className="btn btn-success w-100 mt-3"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
-                </div>
-              </div>
+              <p>
+                <strong>Marca:</strong> {selectedVehicle.brand}
+              </p>
+              <p>
+                <strong>Modelo:</strong> {selectedVehicle.model}
+              </p>
+              <p>
+                <strong>Ano:</strong> {selectedVehicle.year}
+              </p>
+              <p>
+                <strong>Preço:</strong> R$ {selectedVehicle.price}
+              </p>
+              <a
+                href={`https://wa.me/21988359825?text=Olá, estou interessado no ${selectedVehicle.carName}`}
+                className="btn btn-success w-100 mt-3"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaWhatsapp className="me-1" /> Fale Conosco
+              </a>
             </Modal.Body>
           </>
         )}
