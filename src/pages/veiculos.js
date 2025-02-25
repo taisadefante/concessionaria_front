@@ -51,11 +51,11 @@ function Veiculos() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
   const applyFilters = () => {
-    let filtered = veiculos;
+    let filtered = [...veiculos];
     if (filters.brand) {
       filtered = filtered.filter((v) =>
         v.brand.toLowerCase().includes(filters.brand.toLowerCase())
@@ -67,20 +67,16 @@ function Veiculos() {
       );
     }
     if (filters.minYear) {
-      filtered = filtered.filter((v) => v.year >= parseInt(filters.minYear));
+      filtered = filtered.filter((v) => v.year >= Number(filters.minYear));
     }
     if (filters.maxYear) {
-      filtered = filtered.filter((v) => v.year <= parseInt(filters.maxYear));
+      filtered = filtered.filter((v) => v.year <= Number(filters.maxYear));
     }
     if (filters.minPrice) {
-      filtered = filtered.filter(
-        (v) => v.price >= parseFloat(filters.minPrice)
-      );
+      filtered = filtered.filter((v) => v.price >= Number(filters.minPrice));
     }
     if (filters.maxPrice) {
-      filtered = filtered.filter(
-        (v) => v.price <= parseFloat(filters.maxPrice)
-      );
+      filtered = filtered.filter((v) => v.price <= Number(filters.maxPrice));
     }
     setFilteredVehicles(filtered);
   };
@@ -95,7 +91,7 @@ function Veiculos() {
         <div className="mb-3 text-center">
           <Button
             variant="dark"
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => setShowFilters((prev) => !prev)}
             aria-controls="filter-collapse"
             aria-expanded={showFilters}
           >
@@ -106,54 +102,24 @@ function Veiculos() {
         <Collapse in={showFilters}>
           <div id="filter-collapse" className="card card-body mb-4">
             <div className="row">
-              <div className="col-md-3">
-                <Form.Group>
-                  <Form.Label>Marca</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="brand"
-                    value={filters.brand}
-                    onChange={handleFilterChange}
-                    placeholder="Digite a marca"
-                  />
-                </Form.Group>
-              </div>
-              <div className="col-md-3">
-                <Form.Group>
-                  <Form.Label>Modelo</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="model"
-                    value={filters.model}
-                    onChange={handleFilterChange}
-                    placeholder="Digite o modelo"
-                  />
-                </Form.Group>
-              </div>
-              <div className="col-md-3">
-                <Form.Group>
-                  <Form.Label>Ano Mínimo</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="minYear"
-                    value={filters.minYear}
-                    onChange={handleFilterChange}
-                    placeholder="Ano mínimo"
-                  />
-                </Form.Group>
-              </div>
-              <div className="col-md-3">
-                <Form.Group>
-                  <Form.Label>Ano Máximo</Form.Label>
-                  <Form.Control
-                    type="number"
-                    name="maxYear"
-                    value={filters.maxYear}
-                    onChange={handleFilterChange}
-                    placeholder="Ano máximo"
-                  />
-                </Form.Group>
-              </div>
+              {Object.keys(filters).map((key) => (
+                <div key={key} className="col-md-3">
+                  <Form.Group>
+                    <Form.Label>{key.replace(/([A-Z])/g, " $1")}</Form.Label>
+                    <Form.Control
+                      type={
+                        key.includes("Year") || key.includes("Price")
+                          ? "number"
+                          : "text"
+                      }
+                      name={key}
+                      value={filters[key]}
+                      onChange={handleFilterChange}
+                      placeholder={`Digite ${key}`}
+                    />
+                  </Form.Group>
+                </div>
+              ))}
             </div>
             <Button className="mt-3" variant="success" onClick={applyFilters}>
               Aplicar Filtros
