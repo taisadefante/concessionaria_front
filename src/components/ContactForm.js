@@ -13,7 +13,16 @@ function ContactForm() {
           {/* Coluna esquerda: Informações de Contato */}
           <div className="col-md-4 mb-4">
             <div className="p-4 border rounded bg-white shadow-sm">
-              <h3 className="text-center mb-3">Contato</h3>
+              <h2
+                style={{
+                  marginBottom: "15px",
+                  fontWeight: "bold",
+                  color: "#333",
+                  textAlign: "center",
+                }}
+              >
+                Contatos
+              </h2>{" "}
               <p style={{ fontSize: "1.1rem", lineHeight: "1.5" }}>
                 <strong>Endereço:</strong> Rua Exemplo, 123, Bairro, Cidade,
                 Estado.
@@ -61,7 +70,16 @@ function ContactForm() {
           <div className="col-md-8">
             <div className="card shadow-sm">
               <div className="card-body p-4">
-                <h2 className="text-center mb-4">Envie sua Mensagem</h2>
+                <h2
+                  style={{
+                    marginBottom: "15px",
+                    fontWeight: "bold",
+                    color: "#333",
+                    textAlign: "center",
+                  }}
+                >
+                  Envia sua Mensagem
+                </h2>{" "}
                 <form>
                   <div className="mb-3">
                     <input

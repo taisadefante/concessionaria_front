@@ -6,7 +6,6 @@ import Sobre from "./pages/Sobre";
 import Veiculos from "./pages/veiculos";
 import AdmVeiculos from "./pages/admVeiculos";
 import PrivateRoute from "./routes/PrivateRoute";
-import { FaBeer } from "react-icons/fa";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";

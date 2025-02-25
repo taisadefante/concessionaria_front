@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, Carousel } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
 
 function Veiculos() {
@@ -77,20 +77,26 @@ function Veiculos() {
     🏁 Quilometragem: ${veiculo.mileage} km
     💰 Preço: R$ ${veiculo.price}
     📌 Opcionais: ${veiculo.options || "Nenhum"}
-    🔍 Descrição: ${veiculo.description}
-    
-    Poderia me passar mais informações?`;
+    🔍 Descrição: ${veiculo.description}`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
 
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
-      <div className="container-fluid">
-        <h2 className="text-center mb-4">Todos os Veículos</h2>
-
+      <div className="container">
+        <h2
+          style={{
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "#333",
+            textAlign: "center",
+          }}
+        >
+          Todos os Veículos 🚗💨
+        </h2>
         <div className="row">
-          {/* Sidebar de Filtros - Mantido */}
+          {/* Sidebar de Filtros */}
           <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
             <div className="p-3 bg-white shadow-sm rounded">
               <h5>Filtrar Veículos</h5>
@@ -153,47 +159,48 @@ function Veiculos() {
                     key={veiculo.id}
                     className="col-lg-4 col-md-6 col-sm-12 mb-4"
                   >
-                    <div className="card shadow-sm h-100">
-                      <Carousel indicators={false} interval={2000}>
-                        {veiculo.images.map((img, index) => (
-                          <Carousel.Item key={index}>
-                            <img
-                              src={`http://localhost:3001${img}`}
-                              className="card-img-top"
-                              alt={`Imagem ${index + 1}`}
-                              style={{ height: "200px", objectFit: "cover" }}
-                            />
-                          </Carousel.Item>
-                        ))}
-                      </Carousel>
+                    <div className="card shadow-sm">
+                      {veiculo.image ? (
+                        <img
+                          src={`http://localhost:3001${veiculo.image}`}
+                          className="card-img-top"
+                          alt={veiculo.carName}
+                          style={{
+                            width: "100%",
+                            height: "180px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                          style={{ height: "180px" }}
+                        >
+                          Sem Imagem
+                        </div>
+                      )}
+
                       <div className="card-body text-center">
                         <h5 className="card-title">{veiculo.carName}</h5>
-                        <p>
-                          <strong>Marca:</strong> {veiculo.brand}
+                        <p className="card-text">
+                          {veiculo.model} - {veiculo.year} - {veiculo.color}
                         </p>
-                        <p>
-                          <strong>Ano:</strong> {veiculo.year}
+                        <p className="fw-bold text-danger">
+                          R$ {veiculo.price.toLocaleString()}
                         </p>
-                        <p>
-                          <strong>Quilometragem:</strong>{" "}
-                          {veiculo.mileage.toLocaleString()} km
-                        </p>
-                        <p className="text-danger fw-bold">
-                          <strong>Preço:</strong> R${" "}
-                          {veiculo.price.toLocaleString()}
-                        </p>
-                        <div className="d-flex justify-content-between">
+
+                        <div className="d-flex justify-content-center gap-2">
                           <button
-                            className="btn btn-dark"
+                            className="btn btn-dark btn-sm"
                             onClick={() => handleShowModal(veiculo)}
                           >
                             Detalhes
                           </button>
                           <a
                             href={generateWhatsAppLink(veiculo)}
-                            className="btn btn-success ms-2"
+                            className="btn btn-success btn-sm d-flex align-items-center"
                           >
-                            <FaWhatsapp /> Fale Conosco
+                            <FaWhatsapp className="me-1" /> WhatsApp
                           </a>
                         </div>
                       </div>
@@ -215,29 +222,17 @@ function Veiculos() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
-                {/* Imagem à esquerda */}
                 <div className="col-md-6">
-                  {selectedVehicle.images &&
-                  selectedVehicle.images.length > 0 ? (
-                    <Carousel>
-                      {selectedVehicle.images.map((img, index) => (
-                        <Carousel.Item key={index}>
-                          <img
-                            src={`http://localhost:3001${img}`}
-                            className="img-fluid rounded"
-                            alt={`Imagem ${index + 1}`}
-                            style={{ maxHeight: "300px", objectFit: "cover" }}
-                          />
-                        </Carousel.Item>
-                      ))}
-                    </Carousel>
-                  ) : (
-                    <p className="text-center">Nenhuma imagem disponível</p>
-                  )}
+                  <img
+                    src={`http://localhost:3001${selectedVehicle.image}`}
+                    className="img-fluid rounded"
+                    alt={selectedVehicle.carName}
+                  />
                 </div>
-
-                {/* Detalhes à direita */}
                 <div className="col-md-6">
+                  <p>
+                    <strong>Nome:</strong> {selectedVehicle.carName}
+                  </p>
                   <p>
                     <strong>Marca:</strong> {selectedVehicle.brand}
                   </p>
@@ -253,30 +248,28 @@ function Veiculos() {
                   <p>
                     <strong>KM:</strong>{" "}
                     {selectedVehicle.mileage.toLocaleString()} km
-                  </p>{" "}
+                  </p>
+
                   <p>
                     <strong>Opcionais:</strong>{" "}
                     {selectedVehicle.options || "Nenhum"}
                   </p>
-                  <p className="text-danger fw-bold">
-                    <strong>R$ {selectedVehicle.price.toLocaleString()}</strong>
+                  <p>
+                    <strong>Descrição:</strong> {selectedVehicle.description}
                   </p>
+                  <p className="fw-bold text-danger">
+                    <strong>Valor:</strong> R${" "}
+                    {selectedVehicle.price.toLocaleString()}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100 mt-3"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
                 </div>
               </div>
             </Modal.Body>
-            <Modal.Footer>
-              <a
-                href={generateWhatsAppLink(selectedVehicle)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-success"
-              >
-                <FaWhatsapp /> Fale Conosco
-              </a>
-              <Button variant="secondary" onClick={handleCloseModal}>
-                Fechar
-              </Button>
-            </Modal.Footer>
           </>
         )}
       </Modal>

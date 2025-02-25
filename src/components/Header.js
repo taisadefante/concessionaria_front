@@ -32,9 +32,9 @@ const HoverLink = ({
         color: "#bbb",
         textDecoration: "none",
         transition: "color 0.3s ease",
-      }} // Cor padrão cinza
-      onMouseEnter={(e) => (e.target.style.color = "#fff")} // Hover branco
-      onMouseLeave={(e) => (e.target.style.color = "#bbb")} // Volta para cinza ao sair
+      }}
+      onMouseEnter={(e) => (e.target.style.color = "#fff")}
+      onMouseLeave={(e) => (e.target.style.color = "#bbb")}
       {...props}
     >
       {children}
@@ -46,7 +46,6 @@ function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
-  // 🔹 Função para voltar ao topo ao clicar na Home ou na Logo
   const scrollToTop = () => {
     navigate("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -68,7 +67,7 @@ function Header() {
       >
         <div className="container">
           <div className="d-flex justify-content-between align-items-center py-2">
-            {/* 🔹 Logo volta para o topo ao clicar */}
+            {/* 🔹 Logo */}
             <div>
               <Link to="/" className="navbar-brand" onClick={scrollToTop}>
                 <img
@@ -79,7 +78,7 @@ function Header() {
               </Link>
             </div>
 
-            {/* Menu (Desktop) */}
+            {/* 🔹 Menu (Desktop) */}
             <nav className="d-none d-md-block">
               <ul className="nav mx-auto">
                 <li className="nav-item me-3">
@@ -101,7 +100,7 @@ function Header() {
               </ul>
             </nav>
 
-            {/* Redes Sociais (Desktop) */}
+            {/* 🔹 Redes Sociais (Desktop) */}
             <div className="d-none d-md-flex align-items-center">
               <a
                 href="https://www.instagram.com/seu_usuario"
@@ -128,7 +127,7 @@ function Header() {
               </a>
             </div>
 
-            {/* Botão do Menu Mobile */}
+            {/* 🔹 Botão do Menu Mobile */}
             <div className="d-md-none">
               <button
                 className="navbar-toggler"
@@ -148,7 +147,7 @@ function Header() {
             </div>
           </div>
 
-          {/* Menu Mobile Expandido */}
+          {/* 🔹 Menu Mobile Expandido */}
           {isOpen && (
             <div className="d-md-none bg-dark p-3">
               <ul className="nav flex-column">
@@ -183,11 +182,38 @@ function Header() {
                   </HoverLink>
                 </li>
               </ul>
+
+              {/* 🔹 Redes Sociais no Mobile */}
+              <div className="d-flex justify-content-center mt-3">
+                <a
+                  href="https://www.instagram.com/seu_usuario"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="me-3"
+                >
+                  <i className="bi bi-instagram social-icon"></i>
+                </a>
+                <a
+                  href="https://www.facebook.com/seu_usuario"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="me-3"
+                >
+                  <i className="bi bi-facebook social-icon"></i>
+                </a>
+                <a
+                  href="https://wa.me/21988359825"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i className="bi bi-whatsapp social-icon"></i>
+                </a>
+              </div>
             </div>
           )}
         </div>
 
-        {/* 🔹 Estilos extras para os ícones */}
+        {/* 🔹 Estilos extras */}
         <style>
           {`
             .social-icon {
