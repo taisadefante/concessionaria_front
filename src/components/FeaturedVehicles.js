@@ -48,7 +48,15 @@ function FeaturedVehicles() {
 
   const generateWhatsAppLink = (veiculo) => {
     const phoneNumber = "21988359825";
-    const message = `Olá, estou interessado no veículo: ${veiculo.carName} ${veiculo.model} (${veiculo.year}). Preço: R$ ${veiculo.price}. Gostaria de mais informações.`;
+    const message = `Olá, estou interessado no veículo: ${veiculo.carName} ${
+      veiculo.model
+    } (${veiculo.year}).
+    🚗 Marca: ${veiculo.brand}
+    📅 Ano: ${veiculo.year}
+    🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
+    💰 Preço: R$ ${veiculo.price.toLocaleString()}
+    📌 Opcionais: ${veiculo.options || "Nenhum"}`;
+
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
 
@@ -167,22 +175,13 @@ function FeaturedVehicles() {
         )}
 
         <div className="text-center mt-4">
-          <button
-            className="btn btn-warning"
-            onClick={goToVehiclesPage}
-            style={{
-              padding: "10px 20px",
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              borderRadius: "5px",
-            }}
-          >
+          <button className="btn btn-warning" onClick={goToVehiclesPage}>
             🚘 Veja Todos os Nossos Veículos
           </button>
         </div>
       </div>
 
-      {/* 🔹 Modal restaurada ao formato original */}
+      {/* 🔹 Modal atualizada com informações no lado direito */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
@@ -192,17 +191,18 @@ function FeaturedVehicles() {
             <Modal.Body>
               <div className="row">
                 <div className="col-md-6">
-                  {selectedVehicle.images?.length > 0 ? (
+                  {selectedVehicle.images?.length > 0 && (
                     <img
                       src={`http://localhost:3001${selectedVehicle.images[0]}`}
                       className="img-fluid rounded"
                       alt={selectedVehicle.carName}
                     />
-                  ) : (
-                    <p className="text-center">Nenhuma imagem disponível</p>
                   )}
                 </div>
                 <div className="col-md-6">
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
                   <p>
                     <strong>Modelo:</strong> {selectedVehicle.model}
                   </p>
@@ -213,12 +213,18 @@ function FeaturedVehicles() {
                     <strong>Cor:</strong> {selectedVehicle.color}
                   </p>
                   <p>
-                    <strong>Preço:</strong> R${" "}
-                    {selectedVehicle.price.toLocaleString()}
+                    <strong>KM:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p className="fw-bold text-danger">
+                    <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
                   <a
                     href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100 mt-3"
+                    className="btn btn-success w-100"
                   >
                     <FaWhatsapp className="me-1" /> Fale Conosco
                   </a>
