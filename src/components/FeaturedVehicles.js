@@ -205,15 +205,11 @@ function FeaturedVehicles() {
             <Modal.Body>
               <div className="row">
                 <div className="col-md-6">
-                  {selectedVehicle.images?.length > 0 ? (
-                    <img
-                      src={`${API_BASE_URL}${selectedVehicle.images[0]}`}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                    />
-                  ) : (
-                    <p className="text-center">Nenhuma imagem disponível</p>
-                  )}
+                  <img
+                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
+                    className="img-fluid rounded"
+                    alt={selectedVehicle.carName}
+                  />
                 </div>
                 <div className="col-md-6">
                   <p>
@@ -226,11 +222,24 @@ function FeaturedVehicles() {
                     <strong>Ano:</strong> {selectedVehicle.year}
                   </p>
                   <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
                     <strong>KM:</strong> {selectedVehicle.mileage} km
                   </p>
                   <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p className="fw-bold text-danger">
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
                 </div>
               </div>
             </Modal.Body>
