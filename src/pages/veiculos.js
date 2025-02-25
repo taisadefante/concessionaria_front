@@ -24,7 +24,7 @@ function Veiculos() {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       const data = await res.json();
 
-      console.log("📌 Veículos carregados:", data);
+      console.log("📌 Veículos carregados:", data); // Debugging
 
       setVeiculos(data);
       setFilteredVehicles(data);
@@ -90,16 +90,8 @@ function Veiculos() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            textAlign: "center",
-          }}
-        >
-          Todos os Veículos 🚗💨
-        </h2>
+        <h2 className="text-center mb-4 fw-bold">Todos os Veículos 🚗💨</h2>
+
         <div className="row">
           {/* Sidebar de Filtros */}
           <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
@@ -168,6 +160,10 @@ function Veiculos() {
                           className="card-img-top"
                           alt={veiculo.carName}
                           style={{ height: "200px", objectFit: "cover" }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "/images/no-image.png"; // Fallback se imagem não carregar
+                          }}
                         />
                       ) : (
                         <div
@@ -245,12 +241,6 @@ function Veiculos() {
                   <p className="fw-bold text-danger">
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
                 </div>
               </div>
             </Modal.Body>
