@@ -3,6 +3,7 @@ import { Modal, Button, Carousel } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
+import API_BASE_URL from "../services/api"; // 🔹 Importa a URL base correta
 
 function FeaturedVehicles() {
   const [veiculos, setVeiculos] = useState([]);
@@ -18,8 +19,12 @@ function FeaturedVehicles() {
 
   const fetchVehicles = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/vehicles");
+      const res = await fetch(`${API_BASE_URL}/api/vehicles`);
+      if (!res.ok) throw new Error("Erro ao buscar veículos");
+
       const data = await res.json();
+      console.log("🚗 Veículos carregados:", data);
+
       setVeiculos(data);
       updateDisplayedVehicles(data);
     } catch (error) {
@@ -88,7 +93,7 @@ function FeaturedVehicles() {
                   <div className="card shadow-sm" style={{ maxWidth: "90%" }}>
                     {veiculo.images?.length > 0 ? (
                       <img
-                        src={`http://localhost:3001${veiculo.images[0]}`}
+                        src={veiculo.images[0]}
                         className="card-img-top"
                         alt={veiculo.carName}
                         style={{ height: "200px", objectFit: "cover" }}
@@ -138,7 +143,7 @@ function FeaturedVehicles() {
                 <div className="card shadow-sm">
                   {veiculo.images?.length > 0 ? (
                     <img
-                      src={`http://localhost:3001${veiculo.images[0]}`}
+                      src={veiculo.images[0]}
                       className="card-img-top"
                       alt={veiculo.carName}
                       style={{ height: "200px", objectFit: "cover" }}
@@ -181,67 +186,7 @@ function FeaturedVehicles() {
             ))}
           </div>
         )}
-
-        <div className="text-center mt-4">
-          <button className="btn btn-warning" onClick={goToVehiclesPage}>
-            🚘 Veja Todos os Nossos Veículos
-          </button>
-        </div>
       </div>
-
-      {/* 🔹 Modal atualizada com informações no lado direito */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
-                <div className="col-md-6">
-                  {selectedVehicle.images?.length > 0 && (
-                    <img
-                      src={`http://localhost:3001${selectedVehicle.images[0]}`}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                    />
-                  )}
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>KM:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Preço:</strong> R$ {selectedVehicle.price}
-                  </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
-                </div>
-              </div>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
