@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
@@ -6,8 +6,15 @@ import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // 🔹 Se o usuário já está autenticado, redireciona automaticamente
+    if (user) {
+      navigate("/admveiculos");
+    }
+  }, [user, navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -27,7 +34,7 @@ function Login() {
         className="d-flex align-items-center justify-content-center vh-100"
       >
         <Row className="w-100">
-          {/* Logo da empresa (lado esquerdo) */}
+          {/* Lado esquerdo com logo */}
           <Col
             md={6}
             className="d-flex align-items-center justify-content-center bg-dark text-white p-5"
@@ -44,7 +51,7 @@ function Login() {
             </div>
           </Col>
 
-          {/* Card de Login (lado direito) */}
+          {/* Lado direito com o formulário */}
           <Col
             md={6}
             className="d-flex align-items-center justify-content-center"
@@ -88,7 +95,6 @@ function Login() {
         </Row>
       </Container>
 
-      {/* Footer */}
       <footer className="text-center text-white bg-dark py-3 fixed-bottom">
         © {new Date().getFullYear()} - Todos os direitos reservados
       </footer>

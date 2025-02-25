@@ -1,16 +1,26 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    // 🔹 Verifica se já existe um usuário logado no Local Storage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const login = (userData) => {
     setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData)); // 🔹 Salva no Local Storage
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user"); // 🔹 Remove do Local Storage ao sair
   };
 
   return (
@@ -21,9 +31,5 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
-  }
-  return context;
+  return useContext(AuthContext);
 }

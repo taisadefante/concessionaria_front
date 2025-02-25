@@ -1,9 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-function Headeradm() {
+function HeaderAdm() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/"); // 🔹 Redireciona para a Home após sair
+  };
 
   return (
     <header
@@ -14,7 +20,6 @@ function Headeradm() {
       }}
     >
       <div className="container-fluid">
-        {/* LOGO */}
         <Link
           to="/"
           className="navbar-brand"
@@ -23,20 +28,15 @@ function Headeradm() {
           🚗 Concessionária Admin
         </Link>
 
-        {/* Botão Toggle para Mobile */}
         <button
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menu */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             {user ? (
@@ -52,7 +52,7 @@ function Headeradm() {
                   👤 {user.email}
                 </span>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="btn btn-outline-warning btn-sm"
                   style={{
                     borderRadius: "20px",
@@ -77,4 +77,4 @@ function Headeradm() {
   );
 }
 
-export default Headeradm;
+export default HeaderAdm;
