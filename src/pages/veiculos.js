@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Carousel, Form } from "react-bootstrap";
+import { Modal, Button, Carousel, Form, Collapse } from "react-bootstrap";
 import { FaWhatsapp, FaFilter } from "react-icons/fa";
 import API_BASE_URL from "../services/api";
 
@@ -108,7 +108,7 @@ function Veiculos() {
           <FaFilter /> Filtrar Veículos
         </Button>
 
-        {showFilters && (
+        <Collapse in={showFilters}>
           <div className="p-3 bg-white shadow-sm rounded mb-4">
             <h5>Filtrar Veículos</h5>
             <Form.Control
@@ -129,43 +129,7 @@ function Veiculos() {
               Pesquisar
             </Button>
           </div>
-        )}
-
-        <div className="row">
-          {filteredVehicles.map((veiculo) => (
-            <div key={veiculo.id} className="col-md-4 mb-4">
-              <div className="card shadow-sm h-100 d-flex flex-column">
-                <img
-                  src={`${API_BASE_URL}${veiculo.images?.[0]}`}
-                  className="card-img-top"
-                  alt={veiculo.carName}
-                />
-                <div className="card-body text-center d-flex flex-column">
-                  <h5>{veiculo.carName}</h5>
-                  <p>
-                    {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
-                  </p>
-                  <div className="mt-auto d-flex justify-content-between gap-2">
-                    <Button
-                      variant="dark"
-                      size="sm"
-                      onClick={() => handleShowModal(veiculo)}
-                    >
-                      Detalhes
-                    </Button>
-                    <Button
-                      variant="success"
-                      size="sm"
-                      href={`https://wa.me/?text=Olá, estou interessado no ${veiculo.carName}`}
-                    >
-                      <FaWhatsapp /> Fale Conosco
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        </Collapse>
       </div>
 
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
