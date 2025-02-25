@@ -92,15 +92,7 @@ function Veiculos() {
   return (
     <section className="py-4 bg-light">
       <div className="container">
-        <h2
-          className="mt-4 text-center fs-3"
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            fontSize: "28px",
-          }}
-        >
+        <h2 className="text-center mb-4 fw-bold text-dark display-4">
           Todos os Veículos 🚗💨
         </h2>
 
