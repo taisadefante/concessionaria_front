@@ -5,7 +5,7 @@ function Banner() {
   const bannerImages = [
     "/img/banner1.jpg",
     "/img/banner2.jpg",
-    "/img/banner3.jpg", // Corrigido o nome do terceiro banner
+    "/img/banner.jpg", // Corrigido o nome do terceiro banner
   ];
 
   return (

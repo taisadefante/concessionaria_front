@@ -10,8 +10,6 @@ function FeaturedVehicles() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-
-  // 🔹 Detecta se a tela é menor que 768px (modo mobile)
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
@@ -28,14 +26,6 @@ function FeaturedVehicles() {
       console.error("❌ Erro ao buscar veículos:", error);
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateDisplayedVehicles(veiculos);
-    }, 3600000);
-
-    return () => clearInterval(interval);
-  }, [veiculos]);
 
   const updateDisplayedVehicles = (allVehicles) => {
     if (allVehicles.length > 3) {
@@ -70,35 +60,24 @@ function FeaturedVehicles() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            textAlign: "center",
-          }}
-        >
-          Veículos em Destaque
-        </h2>
+        <h2 className="text-center mb-4">Veículos em Destaque</h2>
 
         {displayedVehicles.length === 0 ? (
           <p className="text-center">Nenhum veículo disponível no momento.</p>
         ) : isMobile ? (
-          /* 🔹 Exibir como Carrossel no Mobile com Setas */
+          // 🔹 Exibir apenas um card por vez no carrossel no Mobile
           <Carousel
             indicators={false}
             interval={3000}
             nextIcon={
               <span
                 className="carousel-control-next-icon"
-                aria-hidden="true"
                 style={{ filter: "invert(50%)" }}
               />
             }
             prevIcon={
               <span
                 className="carousel-control-prev-icon"
-                aria-hidden="true"
                 style={{ filter: "invert(50%)" }}
               />
             }
@@ -124,38 +103,28 @@ function FeaturedVehicles() {
                     )}
 
                     <div className="card-body text-center">
-                      <h5
-                        className="card-title"
-                        style={{
-                          fontSize: "1.2rem",
-                          fontWeight: "bold",
-                          color: "#333",
-                        }}
-                      >
-                        {veiculo.carName}
-                      </h5>
-                      <p
-                        className="card-text"
-                        style={{ fontSize: "0.9rem", color: "#555" }}
-                      >
+                      <h5 className="card-title">{veiculo.carName}</h5>
+                      <p className="card-text">
                         {veiculo.model} - {veiculo.year} - {veiculo.color}
                       </p>
-                      <p
-                        style={{
-                          fontSize: "1.1rem",
-                          fontWeight: "bold",
-                          color: "red",
-                        }}
-                      >
-                        R$ {veiculo.price}
+                      <p className="fw-bold text-danger">
+                        R$ {veiculo.price.toLocaleString()}
                       </p>
 
-                      <button
-                        className="btn btn-dark w-100"
-                        onClick={() => handleShowModal(veiculo)}
-                      >
-                        Detalhes
-                      </button>
+                      <div className="d-flex justify-content-center gap-2">
+                        <button
+                          className="btn btn-dark btn-sm"
+                          onClick={() => handleShowModal(veiculo)}
+                        >
+                          Detalhes
+                        </button>
+                        <a
+                          href={generateWhatsAppLink(veiculo)}
+                          className="btn btn-success btn-sm d-flex align-items-center"
+                        >
+                          <FaWhatsapp className="me-1" /> WhatsApp
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -163,7 +132,6 @@ function FeaturedVehicles() {
             ))}
           </Carousel>
         ) : (
-          /* 🔹 Exibir como Grid em Telas Maiores */
           <div className="row">
             {displayedVehicles.map((veiculo) => (
               <div key={veiculo.id} className="col-md-4 mb-4">
@@ -185,31 +153,28 @@ function FeaturedVehicles() {
                   )}
 
                   <div className="card-body text-center">
-                    <h5
-                      className="card-title"
-                      style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "bold",
-                        color: "#333",
-                      }}
-                    >
-                      {veiculo.carName}
-                    </h5>
-                    <p
-                      className="card-text"
-                      style={{ fontSize: "0.9rem", color: "#555" }}
-                    >
+                    <h5 className="card-title">{veiculo.carName}</h5>
+                    <p className="card-text">
                       {veiculo.model} - {veiculo.year} - {veiculo.color}
                     </p>
-                    <p
-                      style={{
-                        fontSize: "1.1rem",
-                        fontWeight: "bold",
-                        color: "red",
-                      }}
-                    >
-                      R$ {veiculo.price}
+                    <p className="fw-bold text-danger">
+                      R$ {veiculo.price.toLocaleString()}
                     </p>
+
+                    <div className="d-flex justify-content-center gap-2">
+                      <button
+                        className="btn btn-dark btn-sm"
+                        onClick={() => handleShowModal(veiculo)}
+                      >
+                        Detalhes
+                      </button>
+                      <a
+                        href={generateWhatsAppLink(veiculo)}
+                        className="btn btn-success btn-sm d-flex align-items-center"
+                      >
+                        <FaWhatsapp className="me-1" /> WhatsApp
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -217,7 +182,6 @@ function FeaturedVehicles() {
           </div>
         )}
 
-        {/* ✅ Botão para ver todos os veículos */}
         <div className="text-center mt-4">
           <button
             className="btn btn-warning"
@@ -233,6 +197,49 @@ function FeaturedVehicles() {
           </button>
         </div>
       </div>
+
+      {/* Modal de Detalhes */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-6">
+                  <img
+                    src={`http://localhost:3001${selectedVehicle.image}`}
+                    className="img-fluid rounded"
+                    alt={selectedVehicle.carName}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p className="fw-bold text-danger">
+                    <strong>Valor:</strong> R${" "}
+                    {selectedVehicle.price.toLocaleString()}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100 mt-3"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
+import API_BASE_URL from "../services/api"; // Importando URL da API
 
 function Veiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -20,7 +21,7 @@ function Veiculos() {
 
   const fetchVehicles = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/vehicles");
+      const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       const data = await res.json();
       setVeiculos(data);
       setFilteredVehicles(data);
@@ -39,12 +40,12 @@ function Veiculos() {
 
     if (filters.minPrice) {
       filtered = filtered.filter(
-        (v) => v.price >= parseFloat(filters.minPrice)
+        (v) => parseFloat(v.price) >= parseFloat(filters.minPrice)
       );
     }
     if (filters.maxPrice) {
       filtered = filtered.filter(
-        (v) => v.price <= parseFloat(filters.maxPrice)
+        (v) => parseFloat(v.price) <= parseFloat(filters.maxPrice)
       );
     }
     if (filters.search) {
@@ -53,7 +54,9 @@ function Veiculos() {
       );
     }
     if (filters.maxKm) {
-      filtered = filtered.filter((v) => v.mileage <= parseFloat(filters.maxKm));
+      filtered = filtered.filter(
+        (v) => parseInt(v.mileage) <= parseInt(filters.maxKm)
+      );
     }
 
     setFilteredVehicles(filtered);
@@ -74,8 +77,8 @@ function Veiculos() {
     const message = `Olá, estou interessado no veículo: ${veiculo.carName}.
     🚗 Marca: ${veiculo.brand}
     📅 Ano: ${veiculo.year}
-    🏁 Quilometragem: ${veiculo.mileage} km
-    💰 Preço: R$ ${veiculo.price}
+    🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
+    💰 Preço: R$ ${veiculo.price.toLocaleString()}
     📌 Opcionais: ${veiculo.options || "Nenhum"}
     🔍 Descrição: ${veiculo.description}`;
 
@@ -85,16 +88,8 @@ function Veiculos() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            textAlign: "center",
-          }}
-        >
-          Todos os Veículos 🚗💨
-        </h2>
+        <h2 className="text-center mb-4 fw-bold">Todos os Veículos 🚗💨</h2>
+
         <div className="row">
           {/* Sidebar de Filtros */}
           <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
@@ -160,9 +155,9 @@ function Veiculos() {
                     className="col-lg-4 col-md-6 col-sm-12 mb-4"
                   >
                     <div className="card shadow-sm">
-                      {veiculo.image ? (
+                      {veiculo.images?.length > 0 ? (
                         <img
-                          src={`http://localhost:3001${veiculo.image}`}
+                          src={`${API_BASE_URL}${veiculo.images[0]}`}
                           className="card-img-top"
                           alt={veiculo.carName}
                           style={{
@@ -224,18 +219,12 @@ function Veiculos() {
               <div className="row">
                 <div className="col-md-6">
                   <img
-                    src={`http://localhost:3001${selectedVehicle.image}`}
+                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
                     className="img-fluid rounded"
                     alt={selectedVehicle.carName}
                   />
                 </div>
                 <div className="col-md-6">
-                  <p>
-                    <strong>Nome:</strong> {selectedVehicle.carName}
-                  </p>
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
                   <p>
                     <strong>Modelo:</strong> {selectedVehicle.model}
                   </p>
@@ -246,19 +235,11 @@ function Veiculos() {
                     <strong>Cor:</strong> {selectedVehicle.color}
                   </p>
                   <p>
-                    <strong>KM:</strong>{" "}
+                    <strong>Quilometragem:</strong>{" "}
                     {selectedVehicle.mileage.toLocaleString()} km
                   </p>
-
                   <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p>
-                    <strong>Descrição:</strong> {selectedVehicle.description}
-                  </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Valor:</strong> R${" "}
+                    <strong>Preço:</strong> R${" "}
                     {selectedVehicle.price.toLocaleString()}
                   </p>
                   <a

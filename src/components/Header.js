@@ -60,20 +60,20 @@ function Header() {
           width: "100%",
           backgroundColor: "#343a40",
           color: "#fff",
-          padding: "8px 0",
+          padding: "10px 0",
           zIndex: "1000",
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
         }}
       >
         <div className="container">
-          <div className="d-flex justify-content-between align-items-center py-2">
+          <div className="d-flex justify-content-between align-items-center">
             {/* 🔹 Logo */}
             <div>
               <Link to="/" className="navbar-brand" onClick={scrollToTop}>
                 <img
                   src="/img/logo.png"
                   alt="Logo"
-                  style={{ maxWidth: "150px", cursor: "pointer" }}
+                  style={{ maxWidth: "140px", cursor: "pointer" }}
                 />
               </Link>
             </div>
@@ -212,26 +212,29 @@ function Header() {
             </div>
           )}
         </div>
-
-        {/* 🔹 Estilos extras */}
-        <style>
-          {`
-            .social-icon {
-              font-size: 24px;
-              color: #bbb;
-              transition: color 0.3s ease;
-            }
-            .social-icon:hover {
-              color: #fff;
-            }
-
-            /* Adiciona espaço abaixo do header para evitar sobreposição */
-            body {
-              padding-top: 70px;
-            }
-          `}
-        </style>
       </header>
+
+      {/* 🔹 Adicionando margem ao topo para evitar sobreposição do banner */}
+      <div style={{ paddingTop: "25px" }}></div>
+
+      {/* 🔹 Estilos extras */}
+      <style>
+        {`
+          .social-icon {
+            font-size: 24px;
+            color: #bbb;
+            transition: color 0.3s ease;
+          }
+          .social-icon:hover {
+            color: #fff;
+          }
+
+          /* Garante espaço abaixo do header para não sobrepor o conteúdo */
+          body {
+            padding-top: 60px;
+          }
+        `}
+      </style>
     </>
   );
 }

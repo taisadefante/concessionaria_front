@@ -1,9 +1,10 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom"; // ❌ REMOVA BrowserRouter daqui!
+
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Sobre from "./pages/Sobre";
-import Veiculos from "./pages/veiculos";
+import Veiculos from "./pages//veiculos"; // Nome corrigido
 import AdmVeiculos from "./pages/admVeiculos";
 import PrivateRoute from "./routes/PrivateRoute";
 
@@ -19,7 +20,8 @@ function App() {
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/veiculos" element={<Veiculos />} />
         <Route path="/login" element={<Login />} />
-        {/* Protegendo a rota /admveiculos */}
+
+        {/* 🔹 Protegendo a rota /admveiculos */}
         <Route
           path="/admveiculos"
           element={
