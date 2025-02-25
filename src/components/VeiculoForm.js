@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Ícones
+import API_BASE_URL from "../services/api";
 
 function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
-  const formRef = useRef(null); // Referência para o formulário
+  const formRef = useRef(null);
 
   const [formData, setFormData] = useState({
     carName: "",
@@ -20,19 +20,10 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
   useEffect(() => {
     if (editingVeiculo) {
       setFormData({
-        carName: editingVeiculo.carName || "",
-        description: editingVeiculo.description || "",
-        price: editingVeiculo.price || "",
-        year: editingVeiculo.year || "",
-        brand: editingVeiculo.brand || "",
-        model: editingVeiculo.model || "",
-        mileage: editingVeiculo.mileage || "",
-        color: editingVeiculo.color || "",
-        options: editingVeiculo.options || "",
+        ...editingVeiculo,
         images: [],
       });
 
-      // 🔹 Rolando até o formulário automaticamente ao editar
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 300);
@@ -59,7 +50,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     if (files) {
       setFormData((prev) => ({
         ...prev,
@@ -84,13 +74,13 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
 
     try {
       if (editingVeiculo) {
-        await fetch(`http://localhost:3001/api/vehicles/${editingVeiculo.id}`, {
+        await fetch(`${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`, {
           method: "PUT",
           body: data,
         });
         alert("✅ Veículo atualizado com sucesso!");
       } else {
-        await fetch("http://localhost:3001/api/vehicles", {
+        await fetch(`${API_BASE_URL}/api/vehicles`, {
           method: "POST",
           body: data,
         });
@@ -105,8 +95,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
 
   return (
     <div className="container mt-4" ref={formRef}>
-      {" "}
-      {/* 🔹 Adicionado ref ao formulário */}
       <h3 className="text-center">
         {editingVeiculo ? "Editar Veículo" : "Cadastrar Veículo"}
       </h3>
@@ -186,7 +174,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           value={formData.options}
           onChange={handleChange}
         />
-
         <label className="form-label">
           Imagens do Veículo (Múltiplas imagens permitidas)
         </label>
