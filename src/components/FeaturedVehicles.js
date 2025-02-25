@@ -161,16 +161,14 @@ function FeaturedVehicles() {
                 <div className="col-md-6 text-center">
                   {selectedVehicle.images?.length > 0 ? (
                     <Carousel>
-                      {selectedVehicle.images.map((img, index) => (
-                        <Carousel.Item key={index}>
-                          <img
-                            src={`${API_BASE_URL}${img}`}
-                            className="d-block w-100 rounded"
-                            alt={`Imagem ${index + 1}`}
-                            style={{ maxHeight: "300px", objectFit: "cover" }}
-                          />
-                        </Carousel.Item>
-                      ))}
+                      <Carousel.Item>
+                        <img
+                          src={mainImage}
+                          className="d-block w-100 rounded"
+                          alt="Imagem principal"
+                          style={{ maxHeight: "300px", objectFit: "cover" }}
+                        />
+                      </Carousel.Item>
                     </Carousel>
                   ) : (
                     <div

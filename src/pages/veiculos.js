@@ -6,12 +6,6 @@ import API_BASE_URL from "../services/api";
 function Veiculos() {
   const [veiculos, setVeiculos] = useState([]);
   const [filteredVehicles, setFilteredVehicles] = useState([]);
-  const [filters, setFilters] = useState({
-    minPrice: "",
-    maxPrice: "",
-    search: "",
-    maxKm: "",
-  });
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [mainImage, setMainImage] = useState("");
@@ -78,7 +72,6 @@ function Veiculos() {
           Todos os Veículos 🚗💨
         </h2>
         <div className="row">
-          {/* Lista de Veículos */}
           <div className="col-lg-12 col-md-12 col-sm-12">
             {filteredVehicles.length === 0 ? (
               <p className="text-center">Nenhum veículo encontrado.</p>
@@ -147,16 +140,14 @@ function Veiculos() {
                 <div className="col-md-6 text-center">
                   {selectedVehicle.images?.length > 0 ? (
                     <Carousel>
-                      {selectedVehicle.images.map((img, index) => (
-                        <Carousel.Item key={index}>
-                          <img
-                            src={`${API_BASE_URL}${img}`}
-                            className="d-block w-100 rounded"
-                            alt={`Imagem ${index + 1}`}
-                            style={{ maxHeight: "300px", objectFit: "cover" }}
-                          />
-                        </Carousel.Item>
-                      ))}
+                      <Carousel.Item>
+                        <img
+                          src={mainImage}
+                          className="d-block w-100 rounded"
+                          alt="Imagem principal"
+                          style={{ maxHeight: "300px", objectFit: "cover" }}
+                        />
+                      </Carousel.Item>
                     </Carousel>
                   ) : (
                     <div
