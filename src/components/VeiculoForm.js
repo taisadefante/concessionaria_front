@@ -177,7 +177,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           value={formData.options}
           onChange={handleChange}
         />
-        <label className="form-label">Imagens do Veículo</label>
         <input
           className="form-control mb-3"
           type="file"
