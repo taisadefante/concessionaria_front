@@ -86,9 +86,9 @@ function FeaturedVehicles() {
               <Carousel.Item key={veiculo.id}>
                 <div className="d-flex justify-content-center">
                   <div className="card shadow-sm" style={{ maxWidth: "90%" }}>
-                    {veiculo.image ? (
+                    {veiculo.images && veiculo.images.length > 0 ? (
                       <img
-                        src={`http://localhost:3001${veiculo.image}`}
+                        src={`http://localhost:3001${veiculo.images[0]}`} // 🔹 Corrigido acesso à imagem
                         className="card-img-top"
                         alt={veiculo.carName}
                         style={{ height: "200px", objectFit: "cover" }}
@@ -136,9 +136,9 @@ function FeaturedVehicles() {
             {displayedVehicles.map((veiculo) => (
               <div key={veiculo.id} className="col-md-4 mb-4">
                 <div className="card shadow-sm">
-                  {veiculo.image ? (
+                  {veiculo.images && veiculo.images.length > 0 ? (
                     <img
-                      src={`http://localhost:3001${veiculo.image}`}
+                      src={`http://localhost:3001${veiculo.images[0]}`} // 🔹 Corrigido acesso à imagem
                       className="card-img-top"
                       alt={veiculo.carName}
                       style={{ height: "200px", objectFit: "cover" }}
@@ -209,31 +209,10 @@ function FeaturedVehicles() {
               <div className="row">
                 <div className="col-md-6">
                   <img
-                    src={`http://localhost:3001${selectedVehicle.image}`}
+                    src={`http://localhost:3001${selectedVehicle.images?.[0]}`} // 🔹 Corrigido acesso à imagem
                     className="img-fluid rounded"
                     alt={selectedVehicle.carName}
                   />
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Valor:</strong> R${" "}
-                    {selectedVehicle.price.toLocaleString()}
-                  </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100 mt-3"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
                 </div>
               </div>
             </Modal.Body>

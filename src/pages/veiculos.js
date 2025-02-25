@@ -23,6 +23,9 @@ function Veiculos() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       const data = await res.json();
+
+      console.log("📌 Veículos carregados:", data);
+
       setVeiculos(data);
       setFilteredVehicles(data);
     } catch (error) {
@@ -216,40 +219,28 @@ function Veiculos() {
               <Modal.Title>{selectedVehicle.carName}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <div className="row">
-                <div className="col-md-6">
-                  <img
-                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
-                    className="img-fluid rounded"
-                    alt={selectedVehicle.carName}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>Quilometragem:</strong>{" "}
-                    {selectedVehicle.mileage.toLocaleString()} km
-                  </p>
-                  <p>
-                    <strong>Preço:</strong> R${" "}
-                    {selectedVehicle.price.toLocaleString()}
-                  </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100 mt-3"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
-                </div>
-              </div>
+              <img
+                src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
+                className="img-fluid rounded mb-3"
+                alt={selectedVehicle.carName}
+              />
+              <p>
+                <strong>Modelo:</strong> {selectedVehicle.model}
+              </p>
+              <p>
+                <strong>Ano:</strong> {selectedVehicle.year}
+              </p>
+              <p>
+                <strong>Cor:</strong> {selectedVehicle.color}
+              </p>
+              <p>
+                <strong>Quilometragem:</strong>{" "}
+                {selectedVehicle.mileage.toLocaleString()} km
+              </p>
+              <p>
+                <strong>Preço:</strong> R${" "}
+                {selectedVehicle.price.toLocaleString()}
+              </p>
             </Modal.Body>
           </>
         )}
