@@ -85,8 +85,16 @@ function Veiculos() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2 className="text-center mb-4 fw-bold">Todos os Veículos 🚗💨</h2>
-
+        <h2
+          style={{
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "#333",
+            textAlign: "center",
+          }}
+        >
+          Todos os Veículos 🚗💨
+        </h2>
         <div className="row">
           {/* Sidebar de Filtros */}
           <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
@@ -154,16 +162,16 @@ function Veiculos() {
                           src={`${API_BASE_URL}${veiculo.images[0]}`}
                           className="card-img-top"
                           alt={veiculo.carName}
-                          onError={(e) =>
-                            (e.target.src =
-                              "https://via.placeholder.com/300x200?text=Sem+Imagem")
-                          }
-                          style={{ height: "200px", objectFit: "cover" }}
+                          style={{
+                            width: "100%",
+                            height: "180px",
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         <div
                           className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                          style={{ height: "200px" }}
+                          style={{ height: "180px" }}
                         >
                           Sem Imagem
                         </div>
@@ -212,23 +220,31 @@ function Veiculos() {
             <Modal.Body>
               <div className="row">
                 <div className="col-md-6">
-                  {selectedVehicle.images?.length > 0 && (
-                    <img
-                      src={`${API_BASE_URL}${selectedVehicle.images[0]}`}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                    />
-                  )}
+                  <img
+                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
+                    className="img-fluid rounded"
+                    alt={selectedVehicle.carName}
+                  />
                 </div>
                 <div className="col-md-6">
                   <p>
                     <strong>Modelo:</strong> {selectedVehicle.model}
                   </p>
                   <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
                     <strong>Ano:</strong> {selectedVehicle.year}
                   </p>
                   <p>
                     <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>KM:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
                   </p>
                   <p className="fw-bold text-danger">
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
