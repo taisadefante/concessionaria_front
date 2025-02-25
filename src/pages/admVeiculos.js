@@ -17,7 +17,6 @@ function AdmVeiculos() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       if (!res.ok) throw new Error("Erro ao buscar veículos");
-
       const data = await res.json();
       setVeiculos(data);
     } catch (error) {
@@ -37,7 +36,6 @@ function AdmVeiculos() {
       {alertMessage && (
         <Alert variant={alertMessage.type}>{alertMessage.text}</Alert>
       )}
-
       <VeiculoForm
         onSubmit={fetchVeiculos}
         editingVeiculo={editingVeiculo}
@@ -49,10 +47,14 @@ function AdmVeiculos() {
           <tr>
             <th>Imagem</th>
             <th>Nome</th>
+            <th>Descrição</th>
             <th>Preço</th>
             <th>Ano</th>
             <th>Marca</th>
             <th>Modelo</th>
+            <th>Quilometragem</th>
+            <th>Cor</th>
+            <th>Opcionais</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -60,26 +62,25 @@ function AdmVeiculos() {
           {veiculos.map((veiculo) => (
             <tr key={veiculo.id}>
               <td>
-                {veiculo.images?.length > 0 ? (
-                  <img
-                    src={`${API_BASE_URL}${veiculo.images[0]}`}
-                    width="100"
-                    alt="veículo"
-                    style={{ objectFit: "cover", borderRadius: "5px" }}
-                  />
-                ) : (
-                  "Sem Imagem"
-                )}
+                <img
+                  src={`${API_BASE_URL}${veiculo.images[0]}`}
+                  width="100"
+                  alt="veículo"
+                  style={{ objectFit: "cover" }}
+                />
               </td>
               <td>{veiculo.carName}</td>
-              <td>R$ {veiculo.price.toLocaleString()}</td>
+              <td>{veiculo.description}</td>
+              <td>{veiculo.price}</td>
               <td>{veiculo.year}</td>
               <td>{veiculo.brand}</td>
               <td>{veiculo.model}</td>
+              <td>{veiculo.mileage}</td>
+              <td>{veiculo.color}</td>
+              <td>{veiculo.options}</td>
               <td>
                 <Button
                   variant="warning"
-                  className="me-2"
                   onClick={() => setEditingVeiculo(veiculo)}
                 >
                   <FaEdit />
