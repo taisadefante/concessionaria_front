@@ -33,7 +33,7 @@ function Veiculos() {
 
       console.log("📌 Veículos carregados:", data);
       setVeiculos(data);
-      setFilteredVehicles(data); // Certifica que os veículos são carregados corretamente
+      setFilteredVehicles(data);
     } catch (error) {
       console.error("❌ Erro ao buscar veículos:", error);
       setVeiculos([]);
@@ -139,27 +139,6 @@ function Veiculos() {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Buscar Veículo</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="search"
-                  placeholder="Digite o nome do veículo"
-                  value={filters.search}
-                  onChange={handleFilterChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Quilometragem Máxima</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="maxKm"
-                  value={filters.maxKm}
-                  onChange={handleFilterChange}
-                />
-              </Form.Group>
-
               <Button variant="dark" className="w-100" onClick={applyFilters}>
                 Pesquisar
               </Button>
@@ -222,6 +201,31 @@ function Veiculos() {
           </div>
         </div>
       </div>
+
+      {/* MODAL DE DETALHES COM MINIATURAS */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>
+                <strong>Modelo:</strong> {selectedVehicle.model}
+              </p>
+              <p>
+                <strong>Preço:</strong> R$ {selectedVehicle.price}
+              </p>
+              <a
+                href={generateWhatsAppLink(selectedVehicle)}
+                className="btn btn-success w-100 mt-3"
+              >
+                <FaWhatsapp className="me-1" /> Fale Conosco
+              </a>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }
