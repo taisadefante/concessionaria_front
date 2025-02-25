@@ -205,28 +205,80 @@ function Veiculos() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
+                {/* 🔹 Carrossel de Imagens */}
                 <div className="col-md-6 text-center">
-                  <Carousel>
-                    {selectedVehicle.images?.map((img, index) => (
-                      <Carousel.Item key={index}>
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      <Carousel.Item>
                         <img
-                          src={`${API_BASE_URL}${img}`}
+                          src={mainImage}
                           className="d-block w-100 rounded"
-                          alt={`Imagem ${index + 1}`}
+                          alt="Imagem principal"
                           style={{ maxHeight: "300px", objectFit: "cover" }}
                         />
                       </Carousel.Item>
+                    </Carousel>
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+
+                  {/* 🔹 Miniaturas das Imagens */}
+                  <div className="d-flex justify-content-center mt-3">
+                    {selectedVehicle.images?.map((img, index) => (
+                      <img
+                        key={index}
+                        src={`${API_BASE_URL}${img}`}
+                        alt={`Imagem ${index + 1}`}
+                        className="img-thumbnail mx-1"
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                          cursor: "pointer",
+                          border:
+                            mainImage === `${API_BASE_URL}${img}`
+                              ? "2px solid #007bff"
+                              : "none",
+                        }}
+                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
+                      />
                     ))}
-                  </Carousel>
+                  </div>
                 </div>
 
+                {/* 🔹 Coluna com Informações do Veículo */}
                 <div className="col-md-6">
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
                   <p>
                     <strong>Modelo:</strong> {selectedVehicle.model}
                   </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong>{" "}
+                    {selectedVehicle.description || "Não informada"}
+                  </p>
                   <a
                     href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100"
+                    className="btn btn-success w-100 mt-3"
                   >
                     <FaWhatsapp className="me-1" /> Fale Conosco
                   </a>
