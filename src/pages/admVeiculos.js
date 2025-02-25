@@ -3,6 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Alert, Table, Modal, Button, Carousel } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import HeaderAdm from "../components/Headeradm";
+import API_BASE_URL from "../services/api"; // 🔹 Importação correta da URL da API
 
 function AdmVeiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -16,27 +17,33 @@ function AdmVeiculos() {
     fetchVeiculos();
   }, []);
 
+  // 🔹 Buscar veículos cadastrados
   const fetchVeiculos = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/vehicles");
+      const res = await fetch(`${API_BASE_URL}/api/vehicles`);
+      if (!res.ok) throw new Error("Erro ao buscar veículos");
+
       const data = await res.json();
+      console.log("🚗 Veículos carregados:", data); // Debugging
       setVeiculos(data);
     } catch (error) {
+      console.error("❌ Erro ao buscar veículos:", error);
       setAlertMessage({ type: "danger", text: "❌ Erro ao buscar veículos." });
     }
   };
 
+  // 🔹 Excluir veículo
   const handleDelete = async (id) => {
     if (window.confirm("Tem certeza que deseja excluir este veículo?")) {
       try {
-        await fetch(`http://localhost:3001/api/vehicles/${id}`, {
+        await fetch(`${API_BASE_URL}/api/vehicles/${id}`, {
           method: "DELETE",
         });
         setAlertMessage({
           type: "success",
           text: "✅ Veículo excluído com sucesso!",
         });
-        fetchVeiculos();
+        fetchVeiculos(); // Atualiza a lista
       } catch (error) {
         setAlertMessage({
           type: "danger",
@@ -46,6 +53,7 @@ function AdmVeiculos() {
     }
   };
 
+  // 🔹 Editar veículo
   const handleEdit = (veiculo) => {
     setEditingVeiculo(veiculo);
     setTimeout(() => {
@@ -53,6 +61,7 @@ function AdmVeiculos() {
     }, 300);
   };
 
+  // 🔹 Abrir Modal de Detalhes
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
     setShowModal(true);
@@ -68,6 +77,7 @@ function AdmVeiculos() {
   return (
     <div className="container my-5">
       <HeaderAdm />
+
       {alertMessage && (
         <Alert
           variant={alertMessage.type}
@@ -119,7 +129,7 @@ function AdmVeiculos() {
                     <td>
                       {veiculo.images?.length > 0 ? (
                         <img
-                          src={`http://localhost:3001${veiculo.images[0]}`}
+                          src={`${API_BASE_URL}${veiculo.images[0]}`}
                           alt={veiculo.carName}
                           style={{
                             width: "150px",
@@ -180,14 +190,13 @@ function AdmVeiculos() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
-                {/* 🔹 Carrossel de Imagens */}
                 <div className="col-md-5">
                   {selectedVehicle.images?.length > 0 ? (
                     <Carousel indicators interval={2000}>
                       {selectedVehicle.images.map((img, index) => (
                         <Carousel.Item key={index}>
                           <img
-                            src={`http://localhost:3001${img}`}
+                            src={`${API_BASE_URL}${img}`}
                             className="img-fluid"
                             alt={`Imagem ${index + 1}`}
                             style={{
@@ -205,7 +214,6 @@ function AdmVeiculos() {
                   )}
                 </div>
 
-                {/* 🔹 Dados do veículo à direita */}
                 <div className="col-md-7">
                   <p>
                     <strong>Marca:</strong> {selectedVehicle.brand}
