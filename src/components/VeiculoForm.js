@@ -86,8 +86,9 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
         });
         alert("✅ Veículo cadastrado com sucesso!");
       }
-      resetForm();
-      onSubmit();
+
+      resetForm(); // 🔹 Limpa o formulário após o envio
+      onSubmit(); // 🔹 Atualiza a lista de veículos
     } catch (error) {
       alert("❌ Erro ao salvar veículo.");
     }

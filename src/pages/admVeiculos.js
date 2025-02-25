@@ -3,7 +3,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { Alert, Table, Modal, Button, Carousel } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import HeaderAdm from "../components/Headeradm";
-import API_BASE_URL from "../services/api"; // Importação da URL da API
+import API_BASE_URL from "../services/api"; // 🔹 Importação da URL da API
 
 function AdmVeiculos() {
   const [veiculos, setVeiculos] = useState([]);
@@ -31,54 +31,6 @@ function AdmVeiculos() {
       setAlertMessage({ type: "danger", text: "❌ Erro ao buscar veículos." });
     }
   };
-
-  // 🔹 Excluir veículo e atualizar a lista
-  const handleDelete = async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este veículo?")) {
-      try {
-        const res = await fetch(`${API_BASE_URL}/api/vehicles/${id}`, {
-          method: "DELETE",
-        });
-
-        if (!res.ok) {
-          throw new Error("Erro ao excluir veículo");
-        }
-
-        setAlertMessage({
-          type: "success",
-          text: "✅ Veículo e imagens excluídos com sucesso!",
-        });
-
-        fetchVeiculos(); // Atualiza a lista de veículos
-      } catch (error) {
-        setAlertMessage({
-          type: "danger",
-          text: "❌ Erro ao excluir veículo.",
-        });
-      }
-    }
-  };
-
-  // 🔹 Editar veículo
-  const handleEdit = (veiculo) => {
-    setEditingVeiculo(veiculo);
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 300);
-  };
-
-  // 🔹 Abrir Modal de Detalhes
-  const handleShowModal = (veiculo) => {
-    setSelectedVehicle(veiculo);
-    setShowModal(true);
-  };
-
-  useEffect(() => {
-    if (alertMessage) {
-      const timer = setTimeout(() => setAlertMessage(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [alertMessage]);
 
   return (
     <div className="container my-5">
@@ -135,7 +87,7 @@ function AdmVeiculos() {
                     <td>
                       {veiculo.images?.length > 0 ? (
                         <img
-                          src={`${API_BASE_URL}${veiculo.images[0]}`} // 🔹 Corrigido para exibir corretamente
+                          src={`${API_BASE_URL}${veiculo.images[0]}`}
                           alt={veiculo.carName}
                           style={{
                             width: "150px",
@@ -144,10 +96,24 @@ function AdmVeiculos() {
                             borderRadius: "5px",
                             cursor: "pointer",
                           }}
-                          onClick={() => handleShowModal(veiculo)}
+                          onClick={() => setSelectedVehicle(veiculo)}
                         />
                       ) : (
-                        "Sem Imagem"
+                        <div
+                          style={{
+                            width: "150px",
+                            height: "100px",
+                            backgroundColor: "#ccc",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: "5px",
+                            fontWeight: "bold",
+                            color: "#666",
+                          }}
+                        >
+                          Sem Imagem
+                        </div>
                       )}
                     </td>
                     <td>{veiculo.carName}</td>
@@ -163,13 +129,26 @@ function AdmVeiculos() {
                     <td>
                       <button
                         className="btn btn-warning me-2"
-                        onClick={() => handleEdit(veiculo)}
+                        onClick={() => setEditingVeiculo(veiculo)}
                       >
                         <FaEdit />
                       </button>
                       <button
                         className="btn btn-danger"
-                        onClick={() => handleDelete(veiculo.id)}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Tem certeza que deseja excluir este veículo?"
+                            )
+                          ) {
+                            fetch(
+                              `${API_BASE_URL}/api/vehicles/${veiculo.id}`,
+                              {
+                                method: "DELETE",
+                              }
+                            ).then(() => fetchVeiculos());
+                          }
+                        }}
                       >
                         <FaTrash />
                       </button>
@@ -216,7 +195,21 @@ function AdmVeiculos() {
                       ))}
                     </Carousel>
                   ) : (
-                    <p className="text-center">Nenhuma imagem disponível</p>
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "300px",
+                        backgroundColor: "#ccc",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "8px",
+                        fontWeight: "bold",
+                        color: "#666",
+                      }}
+                    >
+                      Sem Imagem
+                    </div>
                   )}
                 </div>
 
@@ -242,7 +235,7 @@ function AdmVeiculos() {
                     {selectedVehicle.options || "Nenhum"}
                   </p>
                   <p>
-                    <strong>Preço:</strong> R${" "}
+                    <strong>Preço:</strong> R$
                     {selectedVehicle.price.toLocaleString()}
                   </p>
                 </div>
