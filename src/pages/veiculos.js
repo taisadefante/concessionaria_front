@@ -99,6 +99,7 @@ function Veiculos() {
         >
           Todos os Veículos 🚗💨
         </h2>
+
         <div className="row">
           <div className="col-lg-9 col-md-8">
             {filteredVehicles.length === 0 ? (
@@ -119,13 +120,21 @@ function Veiculos() {
                           {veiculo.model} - {veiculo.year} - {veiculo.mileage}{" "}
                           km
                         </p>
-                        <Button
-                          variant="dark"
-                          size="sm"
-                          onClick={() => handleShowModal(veiculo)}
-                        >
-                          Detalhes
-                        </Button>
+                        <div className="d-flex justify-content-center gap-2">
+                          <Button
+                            variant="dark"
+                            size="sm"
+                            onClick={() => handleShowModal(veiculo)}
+                          >
+                            Detalhes
+                          </Button>
+                          <a
+                            href={`https://wa.me/?text=Olá, estou interessado no ${veiculo.carName}`}
+                            className="btn btn-success btn-sm"
+                          >
+                            <FaWhatsapp /> Fale Conosco
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -135,6 +144,7 @@ function Veiculos() {
           </div>
         </div>
       </div>
+
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
