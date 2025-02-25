@@ -204,12 +204,35 @@ function FeaturedVehicles() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-6 text-center">
                   <img
-                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
+                    src={mainImage}
                     className="img-fluid rounded"
                     alt={selectedVehicle.carName}
+                    style={{ maxHeight: "300px", objectFit: "cover" }}
                   />
+                  {/* 🔹 Miniaturas das Imagens */}
+                  <div className="d-flex justify-content-center mt-3">
+                    {selectedVehicle.images?.map((img, index) => (
+                      <img
+                        key={index}
+                        src={`${API_BASE_URL}${img}`}
+                        alt={`Imagem ${index + 1}`}
+                        className="img-thumbnail mx-1"
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                          cursor: "pointer",
+                          border:
+                            mainImage === `${API_BASE_URL}${img}`
+                              ? "2px solid #007bff"
+                              : "none",
+                        }}
+                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
+                      />
+                    ))}
+                  </div>
                 </div>
                 <div className="col-md-6">
                   <p>
@@ -235,7 +258,7 @@ function FeaturedVehicles() {
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
                   <a
-                    href={generateWhatsAppLink(selectedVehicle)}
+                    href={`https://wa.me/21988359825?text=Olá, estou interessado no veículo: ${selectedVehicle.carName} (${selectedVehicle.year}).`}
                     className="btn btn-success w-100"
                   >
                     <FaWhatsapp className="me-1" /> Fale Conosco
