@@ -48,7 +48,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     if (files) {
       setFormData((prev) => ({
         ...prev,
-        images: [...prev.images, ...Array.from(files)],
+        images: [...Array.from(files)], // Substitui as imagens corretamente
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -68,22 +68,27 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     });
 
     try {
+      let response;
       if (editingVeiculo) {
-        await fetch(`${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`, {
-          method: "PUT",
-          body: data,
-        });
-        alert("✅ Veículo atualizado com sucesso!");
+        response = await fetch(
+          `${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`,
+          {
+            method: "PUT",
+            body: data,
+          }
+        );
       } else {
-        await fetch(`${API_BASE_URL}/api/vehicles`, {
+        response = await fetch(`${API_BASE_URL}/api/vehicles`, {
           method: "POST",
           body: data,
         });
-        alert("✅ Veículo cadastrado com sucesso!");
       }
 
+      if (!response.ok) throw new Error("Erro ao salvar veículo");
+
+      alert("✅ Veículo salvo com sucesso!");
       resetForm();
-      onSubmit();
+      onSubmit(); // Atualiza a lista de veículos
     } catch (error) {
       alert("❌ Erro ao salvar veículo.");
     }
@@ -106,6 +111,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Nome do Veículo"
           value={formData.carName}
           onChange={handleChange}
+          required
         />
         <textarea
           className="form-control mb-2"
@@ -113,6 +119,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Descrição"
           value={formData.description}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -121,6 +128,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Valor"
           value={formData.price}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -129,6 +137,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Ano"
           value={formData.year}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -137,6 +146,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Marca"
           value={formData.brand}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -145,6 +155,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Modelo"
           value={formData.model}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -153,6 +164,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Quilometragem"
           value={formData.mileage}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -161,6 +173,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           placeholder="Cor"
           value={formData.color}
           onChange={handleChange}
+          required
         />
         <input
           className="form-control mb-2"
@@ -170,6 +183,10 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           value={formData.options}
           onChange={handleChange}
         />
+
+        <label className="form-label">
+          Imagens do Veículo (Múltiplas imagens permitidas)
+        </label>
         <input
           className="form-control mb-3"
           type="file"
@@ -178,6 +195,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           accept="image/*"
           multiple
         />
+
         <button type="submit" className="btn btn-primary">
           {editingVeiculo ? "Atualizar" : "Cadastrar"}
         </button>
