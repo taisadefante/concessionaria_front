@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import API_BASE_URL from "../services/api";
 import HeaderAdm from "../components/Headeradm";
 
-function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
+function VeiculoForm({ onSubmit }) {
   const formRef = useRef(null);
   const [formData, setFormData] = useState({
     carName: "",
@@ -17,17 +17,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     images: [],
   });
 
-  useEffect(() => {
-    if (editingVeiculo) {
-      setFormData({ ...editingVeiculo, images: [] });
-      setTimeout(() => {
-        formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 300);
-    } else {
-      resetForm();
-    }
-  }, [editingVeiculo]);
-
   const resetForm = () => {
     setFormData({
       carName: "",
@@ -41,12 +30,10 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
       options: "",
       images: [],
     });
-    setEditingVeiculo(null);
   };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     if (files && files.length > 0) {
       setFormData((prev) => ({
         ...prev,
@@ -70,38 +57,23 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     });
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/vehicles`, {
+      await fetch(`${API_BASE_URL}/api/vehicles`, {
         method: "POST",
         body: data,
+        headers: { Accept: "application/json" },
       });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
-      }
-
       alert("✅ Veículo cadastrado com sucesso!");
       resetForm();
       onSubmit();
     } catch (error) {
-      console.error("❌ Erro ao salvar veículo:", error);
-      alert("❌ Erro ao salvar veículo: " + error.message);
+      alert("❌ Erro ao salvar veículo.");
     }
   };
 
   return (
     <div className="container mt-4" ref={formRef}>
       <HeaderAdm />
-      <h2
-        style={{
-          marginBottom: "15px",
-          fontWeight: "bold",
-          color: "#333",
-          textAlign: "center",
-        }}
-      >
-        Cadastrar Veículo{" "}
-      </h2>
+      <h2 className="text-center mb-4">Cadastrar Veículo</h2>
       <form
         onSubmit={handleSubmit}
         className="p-4 border rounded"
@@ -134,68 +106,14 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
         />
         <input
           className="form-control mb-2"
-          type="number"
-          name="year"
-          placeholder="Ano"
-          value={formData.year}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="form-control mb-2"
-          type="text"
-          name="brand"
-          placeholder="Marca"
-          value={formData.brand}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="form-control mb-2"
-          type="text"
-          name="model"
-          placeholder="Modelo"
-          value={formData.model}
-          onChange={handleChange}
-          required
-        />
-        <input
-          className="form-control mb-2"
-          type="number"
-          name="mileage"
-          placeholder="Quilometragem"
-          value={formData.mileage}
-          onChange={handleChange}
-        />
-        <input
-          className="form-control mb-2"
-          type="text"
-          name="color"
-          placeholder="Cor"
-          value={formData.color}
-          onChange={handleChange}
-        />
-        <input
-          className="form-control mb-2"
-          type="text"
-          name="options"
-          placeholder="Opcionais"
-          value={formData.options}
-          onChange={handleChange}
-        />
-
-        <label className="form-label">Imagens do Veículo</label>
-        <input
-          className="form-control mb-3"
           type="file"
           name="images"
           onChange={handleChange}
           accept="image/*"
           multiple
         />
-
         <button type="submit" className="btn btn-primary w-100">
-          {editingVeiculo ? "Atualizar" : "Cadastrar"}
+          Cadastrar
         </button>
       </form>
     </div>
