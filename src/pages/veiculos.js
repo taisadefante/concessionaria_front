@@ -219,13 +219,28 @@ function Veiculos() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
+                {/* 🔹 Coluna da Imagem Principal */}
                 <div className="col-md-6 text-center">
-                  <img
-                    src={mainImage}
-                    className="img-fluid rounded"
-                    alt={selectedVehicle.carName}
-                    style={{ maxHeight: "300px", objectFit: "cover" }}
-                  />
+                  {mainImage ? (
+                    <img
+                      src={mainImage}
+                      className="img-fluid rounded"
+                      alt={selectedVehicle.carName}
+                      style={{
+                        maxHeight: "300px",
+                        objectFit: "cover",
+                        width: "100%",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+
                   {/* 🔹 Miniaturas das Imagens */}
                   <div className="d-flex justify-content-center mt-3">
                     {selectedVehicle.images?.map((img, index) => (
@@ -249,6 +264,8 @@ function Veiculos() {
                     ))}
                   </div>
                 </div>
+
+                {/* 🔹 Coluna com Informações do Veículo */}
                 <div className="col-md-6">
                   <p>
                     <strong>Modelo:</strong> {selectedVehicle.model}
