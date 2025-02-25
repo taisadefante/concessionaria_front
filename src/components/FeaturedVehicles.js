@@ -69,6 +69,12 @@ function FeaturedVehicles() {
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
 
+  // 📌 Função corrigida para redirecionar corretamente para a página de veículos
+  const goToVehiclesPage = () => {
+    navigate("/veiculos");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
@@ -222,12 +228,6 @@ function FeaturedVehicles() {
                   <p className="fw-bold text-danger">
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
                 </div>
               </div>
             </Modal.Body>
