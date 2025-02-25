@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Carousel } from "react-bootstrap";
+import { Modal, Button, Carousel, Form } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
 import API_BASE_URL from "../services/api";
 
 function Veiculos() {
   const [veiculos, setVeiculos] = useState([]);
   const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const [filters, setFilters] = useState({
+    minPrice: "",
+    maxPrice: "",
+    search: "",
+    maxKm: "",
+  });
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [mainImage, setMainImage] = useState("");
@@ -31,6 +37,38 @@ function Veiculos() {
       setVeiculos([]);
       setFilteredVehicles([]);
     }
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const applyFilters = () => {
+    let filtered = [...veiculos];
+
+    if (filters.minPrice) {
+      filtered = filtered.filter(
+        (v) => parseFloat(v.price) >= parseFloat(filters.minPrice)
+      );
+    }
+    if (filters.maxPrice) {
+      filtered = filtered.filter(
+        (v) => parseFloat(v.price) <= parseFloat(filters.maxPrice)
+      );
+    }
+    if (filters.search) {
+      filtered = filtered.filter((v) =>
+        v.carName.toLowerCase().includes(filters.search.toLowerCase())
+      );
+    }
+    if (filters.maxKm) {
+      filtered = filtered.filter(
+        (v) => parseInt(v.mileage) <= parseInt(filters.maxKm)
+      );
+    }
+
+    setFilteredVehicles(filtered);
   };
 
   const handleShowModal = (veiculo) => {
@@ -77,7 +115,36 @@ function Veiculos() {
           Todos os Veículos 🚗💨
         </h2>
         <div className="row">
-          <div className="col-lg-12 col-md-12 col-sm-12">
+          {/* Sidebar de Filtros Restaurada */}
+          <aside className="col-lg-3 col-md-4 col-sm-12 mb-4">
+            <div className="p-3 bg-white shadow-sm rounded">
+              <h5>Filtrar Veículos</h5>
+              <Form.Group className="mb-3">
+                <Form.Label>Valor Mínimo (R$)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="minPrice"
+                  value={filters.minPrice}
+                  onChange={handleFilterChange}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Valor Máximo (R$)</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="maxPrice"
+                  value={filters.maxPrice}
+                  onChange={handleFilterChange}
+                />
+              </Form.Group>
+              <Button variant="dark" className="w-100" onClick={applyFilters}>
+                Pesquisar
+              </Button>
+            </div>
+          </aside>
+
+          {/* Lista de Veículos */}
+          <div className="col-lg-9 col-md-8 col-sm-12">
             {filteredVehicles.length === 0 ? (
               <p className="text-center">Nenhum veículo encontrado.</p>
             ) : (
@@ -131,99 +198,6 @@ function Veiculos() {
           </div>
         </div>
       </div>
-
-      {/* MODAL COM CARROSSEL E MINIATURAS */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
-                {/* 🔹 Carrossel de Imagens */}
-                <div className="col-md-6 text-center">
-                  {selectedVehicle.images?.length > 0 ? (
-                    <Carousel>
-                      <Carousel.Item>
-                        <img
-                          src={mainImage}
-                          className="d-block w-100 rounded"
-                          alt="Imagem principal"
-                          style={{ maxHeight: "300px", objectFit: "cover" }}
-                        />
-                      </Carousel.Item>
-                    </Carousel>
-                  ) : (
-                    <div
-                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                      style={{ height: "300px" }}
-                    >
-                      Sem Imagem
-                    </div>
-                  )}
-
-                  {/* 🔹 Miniaturas das Imagens */}
-                  <div className="d-flex justify-content-center mt-3">
-                    {selectedVehicle.images?.map((img, index) => (
-                      <img
-                        key={index}
-                        src={`${API_BASE_URL}${img}`}
-                        alt={`Imagem ${index + 1}`}
-                        className="img-thumbnail mx-1"
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                          cursor: "pointer",
-                          border:
-                            mainImage === `${API_BASE_URL}${img}`
-                              ? "2px solid #007bff"
-                              : "none",
-                        }}
-                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* 🔹 Coluna com Informações do Veículo */}
-                <div className="col-md-6">
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p>
-                    <strong>Descrição:</strong>{" "}
-                    {selectedVehicle.description || "Não informada"}
-                  </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100 mt-3"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
-                </div>
-              </div>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
