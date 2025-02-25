@@ -69,7 +69,6 @@ function FeaturedVehicles() {
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   };
 
-  // 📌 Função corrigida para redirecionar corretamente para a página de veículos
   const goToVehiclesPage = () => {
     navigate("/veiculos");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -149,7 +148,7 @@ function FeaturedVehicles() {
         </div>
       </div>
 
-      {/* MODAL DE DETALHES COM MINIATURAS */}
+      {/* MODAL DE DETALHES COM MINIATURAS E BOTÃO "FALE CONOSCO" */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
@@ -218,16 +217,15 @@ function FeaturedVehicles() {
                   <p>
                     <strong>Cor:</strong> {selectedVehicle.color}
                   </p>
-                  <p>
-                    <strong>KM:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
                   <p className="fw-bold text-danger">
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100 mt-3"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
                 </div>
               </div>
             </Modal.Body>
