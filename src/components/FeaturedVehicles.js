@@ -186,7 +186,52 @@ function FeaturedVehicles() {
             ))}
           </div>
         )}
+
+        <div className="text-center mt-4">
+          <button className="btn btn-warning" onClick={goToVehiclesPage}>
+            🚘 Veja Todos os Nossos Veículos
+          </button>
+        </div>
       </div>
+
+      {/* 🔹 Modal Atualizada */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-6">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <img
+                      src={selectedVehicle.images[0]}
+                      className="img-fluid rounded"
+                      alt={selectedVehicle.carName}
+                    />
+                  ) : (
+                    <div className="bg-secondary text-white p-3 text-center">
+                      Sem Imagem
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6">
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }
