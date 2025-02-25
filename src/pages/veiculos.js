@@ -94,82 +94,64 @@ function Veiculos() {
           <div className="p-3 bg-white shadow-sm rounded mb-4">
             <h5>Filtrar Veículos</h5>
             <Form>
-              <Form.Control
-                type="text"
-                name="name"
-                placeholder="Nome"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="text"
-                name="model"
-                placeholder="Modelo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="text"
-                name="brand"
-                placeholder="Marca"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="text"
-                name="color"
-                placeholder="Cor"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="number"
-                name="minYear"
-                placeholder="Ano Mínimo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="number"
-                name="maxYear"
-                placeholder="Ano Máximo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="number"
-                name="minPrice"
-                placeholder="Preço Mínimo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="number"
-                name="maxPrice"
-                placeholder="Preço Máximo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="number"
-                name="minKm"
-                placeholder="KM Mínimo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="number"
-                name="maxKm"
-                placeholder="KM Máximo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
+              {Object.keys(filters).map((key) => (
+                <Form.Control
+                  key={key}
+                  type={
+                    key.includes("Price") ||
+                    key.includes("Year") ||
+                    key.includes("Km")
+                      ? "number"
+                      : "text"
+                  }
+                  name={key}
+                  placeholder={key.replace(/([A-Z])/g, " $1")}
+                  className="mb-2"
+                  onChange={handleFilterChange}
+                />
+              ))}
               <Button variant="dark" className="w-100" onClick={applyFilters}>
                 Pesquisar
               </Button>
             </Form>
           </div>
         </Collapse>
+
+        <div className="row">
+          {filteredVehicles.map((veiculo) => (
+            <div key={veiculo.id} className="col-md-4 mb-4">
+              <div className="card shadow-sm h-100 d-flex flex-column">
+                <img
+                  src={`${API_BASE_URL}${veiculo.images?.[0]}`}
+                  className="card-img-top"
+                  alt={veiculo.carName}
+                />
+                <div className="card-body text-center d-flex flex-column">
+                  <h5>{veiculo.carName}</h5>
+                  <p>
+                    {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
+                  </p>
+                  <div className="mt-auto d-flex justify-content-between gap-2">
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      onClick={() => setShowModal(true)}
+                    >
+                      Detalhes
+                    </Button>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      href={`https://wa.me/?text=Olá, estou interessado no ${veiculo.carName}`}
+                    >
+                      <FaWhatsapp /> Fale Conosco
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
