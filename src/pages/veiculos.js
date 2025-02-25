@@ -76,6 +76,20 @@ function Veiculos() {
     setFilteredVehicles(filtered);
   };
 
+  const handleShowModal = (veiculo) => {
+    setSelectedVehicle(veiculo);
+    setMainImage(
+      veiculo.images?.length > 0 ? `${API_BASE_URL}${veiculo.images[0]}` : ""
+    );
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedVehicle(null);
+    setMainImage("");
+  };
+
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
@@ -153,6 +167,43 @@ function Veiculos() {
           ))}
         </div>
       </div>
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-6 text-center">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      {selectedVehicle.images.map((img, index) => (
+                        <Carousel.Item key={index}>
+                          <img
+                            src={`${API_BASE_URL}${img}`}
+                            className="d-block w-100 rounded"
+                            alt="Imagem principal"
+                            style={{ maxHeight: "300px", objectFit: "cover" }}
+                          />
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }
