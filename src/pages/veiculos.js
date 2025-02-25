@@ -9,15 +9,7 @@ function Veiculos() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [mainImage, setMainImage] = useState("");
-  const [filters, setFilters] = useState({
-    name: "",
-    model: "",
-    year: "",
-    minPrice: "",
-    maxPrice: "",
-    mileage: "",
-    brand: "",
-  });
+  const [filters, setFilters] = useState({});
 
   useEffect(() => {
     fetchVehicles();
@@ -41,26 +33,16 @@ function Veiculos() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
   useEffect(() => {
     let filtered = veiculos.filter((veiculo) => {
-      return (
-        (filters.name === "" ||
-          veiculo.carName.toLowerCase().includes(filters.name.toLowerCase())) &&
-        (filters.model === "" ||
-          veiculo.model.toLowerCase().includes(filters.model.toLowerCase())) &&
-        (filters.year === "" ||
-          veiculo.year.toString().includes(filters.year)) &&
-        (filters.minPrice === "" ||
-          veiculo.price >= parseFloat(filters.minPrice)) &&
-        (filters.maxPrice === "" ||
-          veiculo.price <= parseFloat(filters.maxPrice)) &&
-        (filters.mileage === "" ||
-          veiculo.mileage.toString().includes(filters.mileage)) &&
-        (filters.brand === "" ||
-          veiculo.brand.toLowerCase().includes(filters.brand.toLowerCase()))
+      return Object.entries(filters).every(
+        ([key, value]) =>
+          value === "" ||
+          (veiculo[key] &&
+            veiculo[key].toString().toLowerCase().includes(value.toLowerCase()))
       );
     });
     setFilteredVehicles(filtered);
@@ -80,24 +62,6 @@ function Veiculos() {
     setMainImage("");
   };
 
-  const generateWhatsAppLink = (veiculo) => {
-    const phoneNumber = "21988359825";
-    const message = `Olá, estou interessado no veículo: ${veiculo.carName} (${
-      veiculo.year
-    }). 🚗 Marca: ${veiculo.brand} 📅 Ano: ${
-      veiculo.year
-    } 🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km 💰 Preço: R$ ${veiculo.price.toLocaleString()} 📌 Opcionais: ${
-      veiculo.options || "Nenhum"
-    }`;
-
-    return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  };
-
-  const goToVehiclesPage = () => {
-    navigate("/veiculos");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
@@ -112,55 +76,16 @@ function Veiculos() {
           <div className="col-lg-3 col-md-4">
             <div className="p-3 border bg-white">
               <h5>Filtrar Veículos</h5>
-              <input
-                type="text"
-                name="name"
-                placeholder="Nome"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
-              <input
-                type="text"
-                name="model"
-                placeholder="Modelo"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
-              <input
-                type="text"
-                name="year"
-                placeholder="Ano"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
-              <input
-                type="number"
-                name="minPrice"
-                placeholder="Valor Mínimo"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
-              <input
-                type="number"
-                name="maxPrice"
-                placeholder="Valor Máximo"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
-              <input
-                type="text"
-                name="mileage"
-                placeholder="Quilometragem"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
-              <input
-                type="text"
-                name="brand"
-                placeholder="Marca"
-                className="form-control mb-2"
-                onChange={handleFilterChange}
-              />
+              {Object.keys(veiculos[0] || {}).map((key) => (
+                <input
+                  key={key}
+                  type="text"
+                  name={key}
+                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
+                  className="form-control mb-2"
+                  onChange={handleFilterChange}
+                />
+              ))}
             </div>
           </div>
           {/* Lista de Veículos */}
@@ -209,7 +134,6 @@ function Veiculos() {
             </Modal.Header>
             <Modal.Body>
               <div className="row">
-                {/* 🔹 Carrossel de Imagens */}
                 <div className="col-md-6 text-center">
                   {selectedVehicle.images?.length > 0 ? (
                     <Carousel>
@@ -230,32 +154,7 @@ function Veiculos() {
                       Sem Imagem
                     </div>
                   )}
-
-                  {/* 🔹 Miniaturas das Imagens */}
-                  <div className="d-flex justify-content-center mt-3">
-                    {selectedVehicle.images?.map((img, index) => (
-                      <img
-                        key={index}
-                        src={`${API_BASE_URL}${img}`}
-                        alt={`Imagem ${index + 1}`}
-                        className="img-thumbnail mx-1"
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                          cursor: "pointer",
-                          border:
-                            mainImage === `${API_BASE_URL}${img}`
-                              ? "2px solid #007bff"
-                              : "none",
-                        }}
-                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
-                      />
-                    ))}
-                  </div>
                 </div>
-
-                {/* 🔹 Coluna com Informações do Veículo */}
                 <div className="col-md-6">
                   <p>
                     <strong>Marca:</strong> {selectedVehicle.brand}
@@ -280,12 +179,6 @@ function Veiculos() {
                     <strong>Descrição:</strong>{" "}
                     {selectedVehicle.description || "Não informada"}
                   </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100 mt-3"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
                 </div>
               </div>
             </Modal.Body>
