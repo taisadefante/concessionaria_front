@@ -3,7 +3,6 @@ import API_BASE_URL from "../services/api";
 
 function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
   const formRef = useRef(null);
-
   const [formData, setFormData] = useState({
     carName: "",
     description: "",
@@ -23,7 +22,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
         ...editingVeiculo,
         images: [],
       });
-
       setTimeout(() => {
         formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 300);
@@ -73,24 +71,31 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     });
 
     try {
+      let response;
       if (editingVeiculo) {
-        await fetch(`${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`, {
-          method: "PUT",
-          body: data,
-        });
-        alert("✅ Veículo atualizado com sucesso!");
+        response = await fetch(
+          `${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`,
+          {
+            method: "PUT",
+            body: data,
+          }
+        );
       } else {
-        await fetch(`${API_BASE_URL}/api/vehicles`, {
+        response = await fetch(`${API_BASE_URL}/api/vehicles`, {
           method: "POST",
           body: data,
         });
-        alert("✅ Veículo cadastrado com sucesso!");
       }
 
-      resetForm(); // 🔹 Limpa o formulário após o envio
-      onSubmit(); // 🔹 Atualiza a lista de veículos
+      if (!response.ok) throw new Error("Erro ao salvar veículo.");
+
+      alert("✅ Veículo salvo com sucesso!");
+
+      resetForm(); // 🔹 Reseta o formulário após o cadastro
+      onSubmit(); // 🔹 Atualiza a lista de veículos automaticamente
     } catch (error) {
       alert("❌ Erro ao salvar veículo.");
+      console.error(error);
     }
   };
 
@@ -175,6 +180,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           value={formData.options}
           onChange={handleChange}
         />
+
         <label className="form-label">
           Imagens do Veículo (Múltiplas imagens permitidas)
         </label>

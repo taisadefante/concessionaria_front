@@ -204,28 +204,41 @@ function FeaturedVehicles() {
             <Modal.Body>
               <div className="row">
                 <div className="col-md-6">
-                  {selectedVehicle.images?.length > 0 ? (
-                    <img
-                      src={selectedVehicle.images[0]}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                    />
-                  ) : (
-                    <div className="bg-secondary text-white p-3 text-center">
-                      Sem Imagem
-                    </div>
-                  )}
+                  <img
+                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
+                    className="img-fluid rounded"
+                    alt={selectedVehicle.carName}
+                  />
                 </div>
                 <div className="col-md-6">
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
                   <p>
                     <strong>Modelo:</strong> {selectedVehicle.model}
                   </p>
                   <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
                     <strong>Ano:</strong> {selectedVehicle.year}
                   </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>KM:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p className="fw-bold text-danger">
+                    <strong>Preço:</strong> R$ {selectedVehicle.price}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
                 </div>
               </div>
             </Modal.Body>
