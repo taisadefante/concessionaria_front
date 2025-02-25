@@ -76,6 +76,20 @@ function Veiculos() {
     setFilteredVehicles(filtered);
   };
 
+  const handleShowModal = (veiculo) => {
+    setSelectedVehicle(veiculo);
+    setMainImage(
+      veiculo.images?.length > 0 ? `${API_BASE_URL}${veiculo.images[0]}` : ""
+    );
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedVehicle(null);
+    setMainImage("");
+  };
+
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
@@ -117,46 +131,77 @@ function Veiculos() {
           </div>
         )}
 
-        <Modal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          centered
-          size="lg"
-        >
-          {selectedVehicle && (
-            <>
-              <Modal.Header closeButton>
-                <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <div className="row">
-                  <div className="col-md-6 text-center">
-                    {selectedVehicle.images?.length > 0 ? (
-                      <Carousel>
-                        <Carousel.Item>
-                          <img
-                            src={mainImage}
-                            className="d-block w-100 rounded"
-                            alt="Imagem principal"
-                            style={{ maxHeight: "300px", objectFit: "cover" }}
-                          />
-                        </Carousel.Item>
-                      </Carousel>
-                    ) : (
-                      <div
-                        className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                        style={{ height: "300px" }}
-                      >
-                        Sem Imagem
-                      </div>
-                    )}
+        <div className="row">
+          {filteredVehicles.map((veiculo) => (
+            <div key={veiculo.id} className="col-md-4 mb-4">
+              <div className="card shadow-sm h-100 d-flex flex-column">
+                <img
+                  src={`${API_BASE_URL}${veiculo.images?.[0]}`}
+                  className="card-img-top"
+                  alt={veiculo.carName}
+                />
+                <div className="card-body text-center d-flex flex-column">
+                  <h5>{veiculo.carName}</h5>
+                  <p>
+                    {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
+                  </p>
+                  <div className="mt-auto d-flex justify-content-between gap-2">
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      onClick={() => handleShowModal(veiculo)}
+                    >
+                      Detalhes
+                    </Button>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      href={`https://wa.me/?text=Olá, estou interessado no ${veiculo.carName}`}
+                    >
+                      <FaWhatsapp /> Fale Conosco
+                    </Button>
                   </div>
                 </div>
-              </Modal.Body>
-            </>
-          )}
-        </Modal>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-6 text-center">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      <Carousel.Item>
+                        <img
+                          src={mainImage}
+                          className="d-block w-100 rounded"
+                          alt="Imagem principal"
+                          style={{ maxHeight: "300px", objectFit: "cover" }}
+                        />
+                      </Carousel.Item>
+                    </Carousel>
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }
