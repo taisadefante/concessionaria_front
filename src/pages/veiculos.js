@@ -9,7 +9,17 @@ function Veiculos() {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [mainImage, setMainImage] = useState("");
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({
+    name: "",
+    model: "",
+    brand: "",
+    minYear: "",
+    maxYear: "",
+    minPrice: "",
+    maxPrice: "",
+    mileage: "",
+    color: "",
+  });
 
   useEffect(() => {
     fetchVehicles();
@@ -33,20 +43,32 @@ function Veiculos() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    setFilters({ ...filters, [name]: value });
   };
 
-  useEffect(() => {
+  const applyFilters = () => {
     let filtered = veiculos.filter((veiculo) => {
-      return Object.entries(filters).every(
-        ([key, value]) =>
-          value === "" ||
-          (veiculo[key] &&
-            veiculo[key].toString().toLowerCase().includes(value.toLowerCase()))
+      return (
+        (filters.name === "" ||
+          veiculo.carName.toLowerCase().includes(filters.name.toLowerCase())) &&
+        (filters.model === "" ||
+          veiculo.model.toLowerCase().includes(filters.model.toLowerCase())) &&
+        (filters.brand === "" ||
+          veiculo.brand.toLowerCase().includes(filters.brand.toLowerCase())) &&
+        (filters.minYear === "" || veiculo.year >= parseInt(filters.minYear)) &&
+        (filters.maxYear === "" || veiculo.year <= parseInt(filters.maxYear)) &&
+        (filters.minPrice === "" ||
+          veiculo.price >= parseFloat(filters.minPrice)) &&
+        (filters.maxPrice === "" ||
+          veiculo.price <= parseFloat(filters.maxPrice)) &&
+        (filters.mileage === "" ||
+          veiculo.mileage.toString().includes(filters.mileage)) &&
+        (filters.color === "" ||
+          veiculo.color.toLowerCase().includes(filters.color.toLowerCase()))
       );
     });
     setFilteredVehicles(filtered);
-  }, [filters, veiculos]);
+  };
 
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
@@ -72,23 +94,77 @@ function Veiculos() {
           Todos os Veículos 🚗💨
         </h2>
         <div className="row">
-          {/* Filtro */}
           <div className="col-lg-3 col-md-4">
             <div className="p-3 border bg-white">
               <h5>Filtrar Veículos</h5>
-              {Object.keys(veiculos[0] || {}).map((key) => (
-                <input
-                  key={key}
-                  type="text"
-                  name={key}
-                  placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
-                  className="form-control mb-2"
-                  onChange={handleFilterChange}
-                />
-              ))}
+              <input
+                type="text"
+                name="name"
+                placeholder="Nome"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="model"
+                placeholder="Modelo"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="brand"
+                placeholder="Marca"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="minYear"
+                placeholder="Ano Inicial"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="maxYear"
+                placeholder="Ano Final"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="minPrice"
+                placeholder="Valor Mínimo"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="number"
+                name="maxPrice"
+                placeholder="Valor Máximo"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="mileage"
+                placeholder="Quilometragem"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <input
+                type="text"
+                name="color"
+                placeholder="Cor"
+                className="form-control mb-2"
+                onChange={handleFilterChange}
+              />
+              <button className="btn btn-primary w-100" onClick={applyFilters}>
+                Pesquisar
+              </button>
             </div>
           </div>
-          {/* Lista de Veículos */}
           <div className="col-lg-9 col-md-8">
             {filteredVehicles.length === 0 ? (
               <p className="text-center">Nenhum veículo encontrado.</p>
@@ -105,12 +181,6 @@ function Veiculos() {
                       />
                       <div className="card-body text-center">
                         <h5 className="card-title">{veiculo.carName}</h5>
-                        <p className="card-text">
-                          {veiculo.model} - {veiculo.year} - {veiculo.color}
-                        </p>
-                        <p className="fw-bold text-danger">
-                          R$ {veiculo.price.toLocaleString()}
-                        </p>
                         <button
                           className="btn btn-dark btn-sm"
                           onClick={() => handleShowModal(veiculo)}
@@ -126,65 +196,6 @@ function Veiculos() {
           </div>
         </div>
       </div>
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
-                <div className="col-md-6 text-center">
-                  {selectedVehicle.images?.length > 0 ? (
-                    <Carousel>
-                      <Carousel.Item>
-                        <img
-                          src={mainImage}
-                          className="d-block w-100 rounded"
-                          alt="Imagem principal"
-                          style={{ maxHeight: "300px", objectFit: "cover" }}
-                        />
-                      </Carousel.Item>
-                    </Carousel>
-                  ) : (
-                    <div
-                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                      style={{ height: "300px" }}
-                    >
-                      Sem Imagem
-                    </div>
-                  )}
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p>
-                    <strong>Descrição:</strong>{" "}
-                    {selectedVehicle.description || "Não informada"}
-                  </p>
-                </div>
-              </div>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
