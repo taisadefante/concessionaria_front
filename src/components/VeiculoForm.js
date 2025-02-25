@@ -84,7 +84,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
         alert("✅ Veículo cadastrado com sucesso!");
       }
 
-      resetForm();
+      resetForm(); // 🔹 Limpa os campos automaticamente após o envio
       onSubmit();
     } catch (error) {
       alert("❌ Erro ao salvar veículo.");
@@ -116,7 +116,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
               placeholder="Nome do Veículo"
               value={formData.carName}
               onChange={handleChange}
-              required
             />
             <textarea
               className="form-control mb-2"
@@ -132,7 +131,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
               placeholder="Valor"
               value={formData.price}
               onChange={handleChange}
-              required
             />
             <input
               className="form-control mb-2"
@@ -141,7 +139,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
               placeholder="Ano"
               value={formData.year}
               onChange={handleChange}
-              required
             />
             <input
               className="form-control mb-2"
@@ -150,7 +147,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
               placeholder="Marca"
               value={formData.brand}
               onChange={handleChange}
-              required
             />
           </div>
           <div className="col-md-6">
@@ -161,7 +157,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
               placeholder="Modelo"
               value={formData.model}
               onChange={handleChange}
-              required
             />
             <input
               className="form-control mb-2"
