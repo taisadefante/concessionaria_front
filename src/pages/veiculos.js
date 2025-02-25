@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Carousel, Form, Collapse } from "react-bootstrap";
+import { Modal, Button, Collapse, Form } from "react-bootstrap";
 import { FaWhatsapp, FaFilter } from "react-icons/fa";
 import API_BASE_URL from "../services/api";
 
@@ -25,17 +25,15 @@ function Veiculos() {
 
   const fetchVehicles = async () => {
     try {
-      console.log("🔍 Buscando veículos...");
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       if (!res.ok) throw new Error(`Erro ao buscar veículos: ${res.status}`);
       const data = await res.json();
-      console.log("✅ Dados recebidos:", data);
       if (!Array.isArray(data))
         throw new Error("Resposta da API não é um array.");
       setVeiculos(data);
       setFilteredVehicles(data);
     } catch (error) {
-      console.error("❌ Erro ao buscar veículos:", error);
+      console.error("Erro ao buscar veículos:", error);
       setVeiculos([]);
       setFilteredVehicles([]);
     }
@@ -58,7 +56,6 @@ function Veiculos() {
 
   const applyFilters = () => {
     let filtered = veiculos;
-
     if (filters.brand) {
       filtered = filtered.filter((v) =>
         v.brand.toLowerCase().includes(filters.brand.toLowerCase())
@@ -85,7 +82,6 @@ function Veiculos() {
         (v) => v.price <= parseFloat(filters.maxPrice)
       );
     }
-
     setFilteredVehicles(filtered);
   };
 
@@ -96,7 +92,6 @@ function Veiculos() {
           Todos os Veículos 🚗💨
         </h2>
 
-        {/* BOTÃO DE FILTRO */}
         <div className="mb-3 text-center">
           <Button
             variant="dark"
@@ -108,7 +103,6 @@ function Veiculos() {
           </Button>
         </div>
 
-        {/* SEÇÃO DE FILTROS */}
         <Collapse in={showFilters}>
           <div id="filter-collapse" className="card card-body mb-4">
             <div className="row">
@@ -167,7 +161,6 @@ function Veiculos() {
           </div>
         </Collapse>
 
-        {/* LISTA DE VEÍCULOS */}
         <div className="row">
           {filteredVehicles.map((veiculo) => (
             <div key={veiculo.id} className="col-md-4 mb-4">
@@ -206,39 +199,6 @@ function Veiculos() {
           ))}
         </div>
       </div>
-
-      {/* MODAL DE DETALHES */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p>
-                <strong>Marca:</strong> {selectedVehicle.brand}
-              </p>
-              <p>
-                <strong>Modelo:</strong> {selectedVehicle.model}
-              </p>
-              <p>
-                <strong>Ano:</strong> {selectedVehicle.year}
-              </p>
-              <p>
-                <strong>Preço:</strong> R$ {selectedVehicle.price}
-              </p>
-              <a
-                href={`https://wa.me/21988359825?text=Olá, estou interessado no ${selectedVehicle.carName}`}
-                className="btn btn-success w-100 mt-3"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaWhatsapp className="me-1" /> Fale Conosco
-              </a>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
