@@ -48,7 +48,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     if (files) {
       setFormData((prev) => ({
         ...prev,
-        images: [...Array.from(files)], // Substitui as imagens corretamente
+        images: [...prev.images, ...Array.from(files)],
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -68,29 +68,31 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     });
 
     try {
-      let response;
-      if (editingVeiculo) {
-        response = await fetch(
-          `${API_BASE_URL}/api/vehicles/${editingVeiculo.id}`,
-          {
-            method: "PUT",
-            body: data,
-          }
-        );
-      } else {
-        response = await fetch(`${API_BASE_URL}/api/vehicles`, {
-          method: "POST",
+      const response = await fetch(
+        `${API_BASE_URL}/api/vehicles${
+          editingVeiculo ? `/${editingVeiculo.id}` : ""
+        }`,
+        {
+          method: editingVeiculo ? "PUT" : "POST",
           body: data,
-        });
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao salvar veículo");
       }
 
-      if (!response.ok) throw new Error("Erro ao salvar veículo");
-
-      alert("✅ Veículo salvo com sucesso!");
+      alert(
+        `✅ Veículo ${
+          editingVeiculo ? "atualizado" : "cadastrado"
+        } com sucesso!`
+      );
       resetForm();
-      onSubmit(); // Atualiza a lista de veículos
+      onSubmit();
     } catch (error) {
-      alert("❌ Erro ao salvar veículo.");
+      console.error("❌ Erro ao salvar veículo:", error);
+      alert("❌ Erro ao salvar veículo: " + error.message);
     }
   };
 
@@ -183,10 +185,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           value={formData.options}
           onChange={handleChange}
         />
-
-        <label className="form-label">
-          Imagens do Veículo (Múltiplas imagens permitidas)
-        </label>
         <input
           className="form-control mb-3"
           type="file"

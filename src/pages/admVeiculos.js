@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Table, Alert, Button } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
@@ -8,7 +8,6 @@ function AdmVeiculos() {
   const [veiculos, setVeiculos] = useState([]);
   const [editingVeiculo, setEditingVeiculo] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
-  const formRef = useRef(null);
 
   useEffect(() => {
     fetchVeiculos();
@@ -50,14 +49,10 @@ function AdmVeiculos() {
           <tr>
             <th>Imagem</th>
             <th>Nome</th>
-            <th>Descrição</th>
             <th>Preço</th>
             <th>Ano</th>
             <th>Marca</th>
             <th>Modelo</th>
-            <th>Quilometragem</th>
-            <th>Cor</th>
-            <th>Opcionais</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -73,34 +68,14 @@ function AdmVeiculos() {
                     style={{ objectFit: "cover", borderRadius: "5px" }}
                   />
                 ) : (
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      backgroundColor: "#ccc",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: "5px",
-                      fontWeight: "bold",
-                      color: "#666",
-                    }}
-                  >
-                    Sem Imagem
-                  </div>
+                  "Sem Imagem"
                 )}
               </td>
               <td>{veiculo.carName}</td>
-              <td>{veiculo.description}</td>
-              <td className="text-danger fw-bold">
-                R$ {veiculo.price.toLocaleString()}
-              </td>
+              <td>R$ {veiculo.price.toLocaleString()}</td>
               <td>{veiculo.year}</td>
               <td>{veiculo.brand}</td>
               <td>{veiculo.model}</td>
-              <td>{veiculo.mileage.toLocaleString()} km</td>
-              <td>{veiculo.color}</td>
-              <td>{veiculo.options || "Nenhum"}</td>
               <td>
                 <Button
                   variant="warning"
