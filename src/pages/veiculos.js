@@ -23,12 +23,21 @@ function Veiculos() {
   const fetchVehicles = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
+      if (!res.ok) throw new Error(`Erro ao buscar veículos: ${res.status}`);
+
       const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("Resposta da API não é um array de veículos.");
+      }
+
       console.log("📌 Veículos carregados:", data);
       setVeiculos(data);
       setFilteredVehicles(data);
     } catch (error) {
       console.error("❌ Erro ao buscar veículos:", error);
+      setVeiculos([]);
+      setFilteredVehicles([]);
     }
   };
 
@@ -38,7 +47,8 @@ function Veiculos() {
   };
 
   const applyFilters = () => {
-    let filtered = veiculos;
+    let filtered = [...veiculos];
+
     if (filters.minPrice) {
       filtered = filtered.filter(
         (v) => parseFloat(v.price) >= parseFloat(filters.minPrice)
@@ -59,6 +69,7 @@ function Veiculos() {
         (v) => parseInt(v.mileage) <= parseInt(filters.maxKm)
       );
     }
+
     setFilteredVehicles(filtered);
   };
 
@@ -226,19 +237,12 @@ function Veiculos() {
                       <p>
                         <strong>Cor:</strong> {selectedVehicle.color}
                       </p>
-                      <p>
-                        <strong>KM:</strong> {selectedVehicle.mileage} km
-                      </p>
-                      <p>
-                        <strong>Opcionais:</strong>{" "}
-                        {selectedVehicle.options || "Nenhum"}
-                      </p>
                       <p className="fw-bold text-danger">
                         <strong>Preço:</strong> R$ {selectedVehicle.price}
                       </p>
                       <a
                         href={generateWhatsAppLink(selectedVehicle)}
-                        className="btn btn-success w-100"
+                        className="btn btn-success w-100 mt-3"
                       >
                         <FaWhatsapp className="me-1" /> Fale Conosco
                       </a>
