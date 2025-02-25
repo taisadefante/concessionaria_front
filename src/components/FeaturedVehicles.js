@@ -73,7 +73,15 @@ function FeaturedVehicles() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2 className="text-center font-weight-bold text-dark">
+        <h2
+          className="mt-4 text-center fs-3"
+          style={{
+            marginBottom: "15px",
+            fontWeight: "bold",
+            color: "#333",
+            fontSize: "28px",
+          }}
+        >
           Veículos em Destaque
         </h2>
         {displayedVehicles.length === 0 ? (
