@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
+
 import API_BASE_URL from "../services/api";
 
 function Veiculos() {

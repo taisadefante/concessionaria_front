@@ -10,6 +10,7 @@ function FeaturedVehicles() {
   const [displayedVehicles, setDisplayedVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [mainImage, setMainImage] = useState(""); // Definir imagem principal
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
@@ -43,31 +44,29 @@ function FeaturedVehicles() {
 
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
+    if (veiculo?.images?.length > 0) {
+      setMainImage(`${API_BASE_URL}${veiculo.images[0]}`);
+    }
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedVehicle(null);
+    setMainImage(""); // Reseta a imagem principal ao fechar o modal
   };
 
   const generateWhatsAppLink = (veiculo) => {
     const phoneNumber = "21988359825";
     const message = `Olá, estou interessado no veículo: ${veiculo.carName} (${
       veiculo.year
-    }).
-    🚗 Marca: ${veiculo.brand}
-    📅 Ano: ${veiculo.year}
-    🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
-    💰 Preço: R$ ${veiculo.price.toLocaleString()}
-    📌 Opcionais: ${veiculo.options || "Nenhum"}`;
+    }). 🚗 Marca: ${veiculo.brand} 📅 Ano: ${
+      veiculo.year
+    } 🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km 💰 Preço: R$ ${veiculo.price.toLocaleString()} 📌 Opcionais: ${
+      veiculo.options || "Nenhum"
+    }`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  };
-
-  const goToVehiclesPage = () => {
-    navigate("/veiculos");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -86,57 +85,6 @@ function FeaturedVehicles() {
         </h2>
         {displayedVehicles.length === 0 ? (
           <p className="text-center">Nenhum veículo disponível no momento.</p>
-        ) : isMobile ? (
-          <Carousel indicators={false} interval={3000}>
-            {displayedVehicles.map((veiculo) => (
-              <Carousel.Item key={veiculo.id}>
-                <div className="d-flex justify-content-center">
-                  <div className="card shadow-sm" style={{ maxWidth: "90%" }}>
-                    {veiculo.images?.length > 0 ? (
-                      <img
-                        src={`${API_BASE_URL}${veiculo.images[0]}`}
-                        className="card-img-top"
-                        alt={veiculo.carName}
-                        style={{ height: "200px", objectFit: "cover" }}
-                      />
-                    ) : (
-                      <div
-                        className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                        style={{ height: "200px" }}
-                      >
-                        Sem Imagem
-                      </div>
-                    )}
-
-                    <div className="card-body text-center">
-                      <h5 className="card-title">{veiculo.carName}</h5>
-                      <p className="card-text">
-                        {veiculo.model} - {veiculo.year} - {veiculo.color}
-                      </p>
-                      <p className="fw-bold text-danger">
-                        R$ {veiculo.price.toLocaleString()}
-                      </p>
-
-                      <div className="d-flex justify-content-center gap-2">
-                        <button
-                          className="btn btn-dark btn-sm"
-                          onClick={() => handleShowModal(veiculo)}
-                        >
-                          Detalhes
-                        </button>
-                        <a
-                          href={generateWhatsAppLink(veiculo)}
-                          className="btn btn-success btn-sm d-flex align-items-center"
-                        >
-                          <FaWhatsapp className="me-1" /> WhatsApp
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Carousel.Item>
-            ))}
-          </Carousel>
         ) : (
           <div className="row">
             {displayedVehicles.map((veiculo) => (
@@ -195,7 +143,7 @@ function FeaturedVehicles() {
         </div>
       </div>
 
-      {/* MODAL DE DETALHES */}
+      {/* MODAL DE DETALHES COM MINIATURAS */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
@@ -275,7 +223,7 @@ function FeaturedVehicles() {
                     <strong>Preço:</strong> R$ {selectedVehicle.price}
                   </p>
                   <a
-                    href={`https://wa.me/21988359825?text=Olá, estou interessado no veículo: ${selectedVehicle.carName} (${selectedVehicle.year}).`}
+                    href={generateWhatsAppLink(selectedVehicle)}
                     className="btn btn-success w-100"
                   >
                     <FaWhatsapp className="me-1" /> Fale Conosco
