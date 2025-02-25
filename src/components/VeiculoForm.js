@@ -170,8 +170,6 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           value={formData.options}
           onChange={handleChange}
         />
-
-        <label className="form-label">Imagens do Veículo</label>
         <input
           className="form-control mb-3"
           type="file"
@@ -180,21 +178,9 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
           accept="image/*"
           multiple
         />
-
-        <div className="d-flex justify-content-between">
-          <button type="submit" className="btn btn-primary">
-            {editingVeiculo ? "Atualizar" : "Cadastrar"}
-          </button>
-          {editingVeiculo && (
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={resetForm}
-            >
-              Cancelar
-            </button>
-          )}
-        </div>
+        <button type="submit" className="btn btn-primary">
+          {editingVeiculo ? "Atualizar" : "Cadastrar"}
+        </button>
       </form>
     </div>
   );

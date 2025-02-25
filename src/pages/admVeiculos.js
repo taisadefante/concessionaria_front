@@ -50,6 +50,14 @@ function AdmVeiculos() {
           <tr>
             <th>Imagem</th>
             <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Ano</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Quilometragem</th>
+            <th>Cor</th>
+            <th>Opcionais</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -57,15 +65,48 @@ function AdmVeiculos() {
           {veiculos.map((veiculo) => (
             <tr key={veiculo.id}>
               <td>
-                <img
-                  src={`${API_BASE_URL}${veiculo.images[0]}`}
-                  width="100"
-                  alt="veículo"
-                />
+                {veiculo.images?.length > 0 ? (
+                  <img
+                    src={`${API_BASE_URL}${veiculo.images[0]}`}
+                    width="100"
+                    alt="veículo"
+                    style={{ objectFit: "cover", borderRadius: "5px" }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      backgroundColor: "#ccc",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "5px",
+                      fontWeight: "bold",
+                      color: "#666",
+                    }}
+                  >
+                    Sem Imagem
+                  </div>
+                )}
               </td>
               <td>{veiculo.carName}</td>
+              <td>{veiculo.description}</td>
+              <td className="text-danger fw-bold">
+                R$ {veiculo.price.toLocaleString()}
+              </td>
+              <td>{veiculo.year}</td>
+              <td>{veiculo.brand}</td>
+              <td>{veiculo.model}</td>
+              <td>{veiculo.mileage.toLocaleString()} km</td>
+              <td>{veiculo.color}</td>
+              <td>{veiculo.options || "Nenhum"}</td>
               <td>
-                <Button onClick={() => setEditingVeiculo(veiculo)}>
+                <Button
+                  variant="warning"
+                  className="me-2"
+                  onClick={() => setEditingVeiculo(veiculo)}
+                >
                   <FaEdit />
                 </Button>
                 <Button
