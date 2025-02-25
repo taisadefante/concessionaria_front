@@ -186,6 +186,49 @@ function FeaturedVehicles() {
           </button>
         </div>
       </div>
+
+      {/* MODAL DE DETALHES */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-6">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <img
+                      src={`${API_BASE_URL}${selectedVehicle.images[0]}`}
+                      className="img-fluid rounded"
+                      alt={selectedVehicle.carName}
+                    />
+                  ) : (
+                    <p className="text-center">Nenhuma imagem disponível</p>
+                  )}
+                </div>
+                <div className="col-md-6">
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>KM:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Preço:</strong> R$ {selectedVehicle.price}
+                  </p>
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }
