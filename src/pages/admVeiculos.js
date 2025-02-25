@@ -25,13 +25,6 @@ function AdmVeiculos() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este veículo?")) {
-      await fetch(`${API_BASE_URL}/api/vehicles/${id}`, { method: "DELETE" });
-      fetchVeiculos();
-    }
-  };
-
   return (
     <div className="container my-5">
       {alertMessage && (
@@ -44,72 +37,80 @@ function AdmVeiculos() {
         setEditingVeiculo={setEditingVeiculo}
       />
 
-      <Table striped bordered hover className="text-center mt-4">
-        <thead>
-          <tr>
-            <th>Imagem</th>
-            <th>Nome</th>
-            <th>Descrição</th>
-            <th>Preço</th>
-            <th>Ano</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Quilometragem</th>
-            <th>Cor</th>
-            <th>Opcionais</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {veiculos.map((veiculo) => (
-            <tr key={veiculo.id}>
-              <td>
-                {veiculo.images?.length > 0 ? (
-                  <img
-                    src={`${API_BASE_URL}${veiculo.images[0]}`}
-                    width="100"
-                    alt="veículo"
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      backgroundColor: "#ccc",
-                      textAlign: "center",
-                    }}
-                  >
-                    Sem Imagem
-                  </div>
-                )}
-              </td>
-              <td>{veiculo.carName}</td>
-              <td>{veiculo.description}</td>
-              <td>R$ {veiculo.price.toLocaleString()}</td>
-              <td>{veiculo.year}</td>
-              <td>{veiculo.brand}</td>
-              <td>{veiculo.model}</td>
-              <td>{veiculo.mileage} km</td>
-              <td>{veiculo.color}</td>
-              <td>{veiculo.options || "Nenhum"}</td>
-              <td>
-                <Button
-                  variant="warning"
-                  onClick={() => setEditingVeiculo(veiculo)}
-                >
-                  <FaEdit />
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => handleDelete(veiculo.id)}
-                >
-                  <FaTrash />
-                </Button>
-              </td>
+      <div className="table-responsive">
+        <Table
+          striped
+          bordered
+          hover
+          className="text-center mt-4"
+          style={{ minWidth: "1200px" }}
+        >
+          <thead>
+            <tr>
+              <th>Imagem</th>
+              <th>Nome</th>
+              <th>Descrição</th>
+              <th>Preço</th>
+              <th>Ano</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Quilometragem</th>
+              <th>Cor</th>
+              <th>Opcionais</th>
+              <th>Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
+          </thead>
+          <tbody>
+            {veiculos.map((veiculo) => (
+              <tr key={veiculo.id}>
+                <td>
+                  {veiculo.images?.length > 0 ? (
+                    <img
+                      src={`${API_BASE_URL}${veiculo.images[0]}`}
+                      width="100"
+                      alt="veículo"
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        backgroundColor: "#ccc",
+                        textAlign: "center",
+                      }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+                </td>
+                <td>{veiculo.carName}</td>
+                <td>{veiculo.description}</td>
+                <td>R$ {veiculo.price.toLocaleString()}</td>
+                <td>{veiculo.year}</td>
+                <td>{veiculo.brand}</td>
+                <td>{veiculo.model}</td>
+                <td>{veiculo.mileage} km</td>
+                <td>{veiculo.color}</td>
+                <td>{veiculo.options || "Nenhum"}</td>
+                <td>
+                  <Button
+                    variant="warning"
+                    onClick={() => setEditingVeiculo(veiculo)}
+                  >
+                    <FaEdit />
+                  </Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDelete(veiculo.id)}
+                  >
+                    <FaTrash />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </div>
   );
 }

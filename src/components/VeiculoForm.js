@@ -48,7 +48,7 @@ function VeiculoForm({ onSubmit, editingVeiculo, setEditingVeiculo }) {
     if (files) {
       setFormData((prev) => ({
         ...prev,
-        images: [...prev.images, ...Array.from(files)],
+        images: [...files], // Ajuste no armazenamento do array de imagens
       }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
