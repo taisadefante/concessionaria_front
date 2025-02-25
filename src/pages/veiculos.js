@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Carousel, Form, Collapse } from "react-bootstrap";
-import { FaWhatsapp, FaFilter } from "react-icons/fa";
+import { Modal, Button, Carousel } from "react-bootstrap";
+import { FaWhatsapp } from "react-icons/fa";
 import API_BASE_URL from "../services/api";
 
 function Veiculos() {
@@ -8,21 +8,6 @@ function Veiculos() {
   const [filteredVehicles, setFilteredVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [mainImage, setMainImage] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
-
-  const [filters, setFilters] = useState({
-    name: "",
-    model: "",
-    brand: "",
-    color: "",
-    minPrice: "",
-    maxPrice: "",
-    minYear: "",
-    maxYear: "",
-    minKm: "",
-    maxKm: "",
-  });
 
   useEffect(() => {
     fetchVehicles();
@@ -48,16 +33,12 @@ function Veiculos() {
 
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
-    setMainImage(
-      veiculo.images?.length > 0 ? `${API_BASE_URL}${veiculo.images[0]}` : ""
-    );
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedVehicle(null);
-    setMainImage("");
   };
 
   return (
@@ -75,19 +56,30 @@ function Veiculos() {
                   src={`${API_BASE_URL}${veiculo.images?.[0]}`}
                   className="card-img-top"
                   alt={veiculo.carName}
+                  style={{ objectFit: "cover", height: "200px" }}
                 />
                 <div className="card-body text-center d-flex flex-column">
-                  <h5>{veiculo.carName}</h5>
-                  <p>
+                  <h5 className="fw-bold">{veiculo.carName}</h5>
+                  <p className="text-muted">
                     {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
                   </p>
-                  <Button
-                    variant="dark"
-                    size="sm"
-                    onClick={() => handleShowModal(veiculo)}
-                  >
-                    Detalhes
-                  </Button>
+                  <div className="mt-auto d-flex justify-content-between">
+                    <Button
+                      variant="dark"
+                      size="sm"
+                      onClick={() => handleShowModal(veiculo)}
+                    >
+                      Detalhes
+                    </Button>
+                    <a
+                      href={`https://wa.me/21988359825?text=Olá, estou interessado no ${veiculo.carName}`}
+                      className="btn btn-success btn-sm"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaWhatsapp className="me-1" /> Fale Conosco
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -95,7 +87,7 @@ function Veiculos() {
         </div>
       </div>
 
-      {/* MODAL DE DETALHES COM MINIATURAS E BOTÃO "FALE CONOSCO" */}
+      {/* MODAL DE DETALHES */}
       <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         {selectedVehicle && (
           <>
