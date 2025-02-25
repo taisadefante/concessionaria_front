@@ -14,6 +14,7 @@ function AdmVeiculos() {
     fetchVeiculos();
   }, []);
 
+  // 🔹 Função para buscar veículos do backend
   const fetchVeiculos = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
@@ -23,6 +24,27 @@ function AdmVeiculos() {
       setVeiculos(data);
     } catch (error) {
       setAlertMessage({ type: "danger", text: "❌ Erro ao buscar veículos." });
+    }
+  };
+
+  // 🔹 Função para excluir um veículo
+  const handleDelete = async (id) => {
+    if (window.confirm("Tem certeza que deseja excluir este veículo?")) {
+      try {
+        await fetch(`${API_BASE_URL}/api/vehicles/${id}`, {
+          method: "DELETE",
+        });
+        setAlertMessage({
+          type: "success",
+          text: "✅ Veículo excluído com sucesso!",
+        });
+        fetchVeiculos(); // Atualiza a lista
+      } catch (error) {
+        setAlertMessage({
+          type: "danger",
+          text: "❌ Erro ao excluir veículo.",
+        });
+      }
     }
   };
 
@@ -71,6 +93,7 @@ function AdmVeiculos() {
                       src={`${API_BASE_URL}${veiculo.images[0]}`}
                       width="100"
                       alt="veículo"
+                      style={{ objectFit: "cover", borderRadius: "5px" }}
                     />
                   ) : (
                     <div
@@ -78,7 +101,12 @@ function AdmVeiculos() {
                         width: "100px",
                         height: "100px",
                         backgroundColor: "#ccc",
-                        textAlign: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "5px",
+                        fontWeight: "bold",
+                        color: "#666",
                       }}
                     >
                       Sem Imagem
@@ -97,6 +125,7 @@ function AdmVeiculos() {
                 <td>
                   <Button
                     variant="warning"
+                    className="me-2"
                     onClick={() => setEditingVeiculo(veiculo)}
                   >
                     <FaEdit />

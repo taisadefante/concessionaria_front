@@ -3,7 +3,7 @@ import { Modal, Button, Carousel } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import API_BASE_URL from "../services/api"; // 🔹 Importa a URL base correta
+import API_BASE_URL from "../services/api";
 
 function FeaturedVehicles() {
   const [veiculos, setVeiculos] = useState([]);
@@ -53,9 +53,9 @@ function FeaturedVehicles() {
 
   const generateWhatsAppLink = (veiculo) => {
     const phoneNumber = "21988359825";
-    const message = `Olá, estou interessado no veículo: ${veiculo.carName} ${
-      veiculo.model
-    } (${veiculo.year}).
+    const message = `Olá, estou interessado no veículo: ${veiculo.carName} (${
+      veiculo.year
+    }).
     🚗 Marca: ${veiculo.brand}
     📅 Ano: ${veiculo.year}
     🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km
@@ -73,14 +73,7 @@ function FeaturedVehicles() {
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
-        <h2
-          style={{
-            marginBottom: "15px",
-            fontWeight: "bold",
-            color: "#333",
-            textAlign: "center",
-          }}
-        >
+        <h2 className="text-center font-weight-bold text-dark">
           Veículos em Destaque
         </h2>
         {displayedVehicles.length === 0 ? (
@@ -93,7 +86,7 @@ function FeaturedVehicles() {
                   <div className="card shadow-sm" style={{ maxWidth: "90%" }}>
                     {veiculo.images?.length > 0 ? (
                       <img
-                        src={veiculo.images[0]}
+                        src={`${API_BASE_URL}${veiculo.images[0]}`}
                         className="card-img-top"
                         alt={veiculo.carName}
                         style={{ height: "200px", objectFit: "cover" }}
@@ -143,7 +136,7 @@ function FeaturedVehicles() {
                 <div className="card shadow-sm">
                   {veiculo.images?.length > 0 ? (
                     <img
-                      src={veiculo.images[0]}
+                      src={`${API_BASE_URL}${veiculo.images[0]}`}
                       className="card-img-top"
                       alt={veiculo.carName}
                       style={{ height: "200px", objectFit: "cover" }}
@@ -193,58 +186,6 @@ function FeaturedVehicles() {
           </button>
         </div>
       </div>
-
-      {/* 🔹 Modal Atualizada */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
-                <div className="col-md-6">
-                  <img
-                    src={`${API_BASE_URL}${selectedVehicle.images?.[0]}`}
-                    className="img-fluid rounded"
-                    alt={selectedVehicle.carName}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>KM:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Preço:</strong> R$ {selectedVehicle.price}
-                  </p>
-                  <a
-                    href={generateWhatsAppLink(selectedVehicle)}
-                    className="btn btn-success w-100"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
-                </div>
-              </div>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
