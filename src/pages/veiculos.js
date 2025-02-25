@@ -76,6 +76,20 @@ function Veiculos() {
     setFilteredVehicles(filtered);
   };
 
+  const handleShowModal = (veiculo) => {
+    setSelectedVehicle(veiculo);
+    setMainImage(
+      veiculo.images?.length > 0 ? `${API_BASE_URL}${veiculo.images[0]}` : ""
+    );
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedVehicle(null);
+    setMainImage("");
+  };
+
   return (
     <section style={{ padding: "40px 0", backgroundColor: "#f8f9fa" }}>
       <div className="container">
@@ -86,132 +100,76 @@ function Veiculos() {
           Todos os Veículos 🚗💨
         </h2>
 
-        <div className="row">
-          <aside className="col-lg-3 col-md-4 mb-4">
-            <div className="p-3 bg-white shadow-sm rounded">
-              <h5>Filtrar Veículos</h5>
-              <Form.Control
-                type="text"
-                name="name"
-                placeholder="Nome"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="text"
-                name="model"
-                placeholder="Modelo"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="text"
-                name="brand"
-                placeholder="Marca"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <Form.Control
-                type="text"
-                name="color"
-                placeholder="Cor"
-                className="mb-2"
-                onChange={handleFilterChange}
-              />
-              <div className="row">
-                <div className="col-6">
-                  <Form.Control
-                    type="number"
-                    name="minPrice"
-                    placeholder="Menor Valor"
-                    className="mb-2"
-                    onChange={handleFilterChange}
-                  />
-                  <Form.Control
-                    type="number"
-                    name="minYear"
-                    placeholder="Ano Inicial"
-                    className="mb-2"
-                    onChange={handleFilterChange}
-                  />
-                  <Form.Control
-                    type="number"
-                    name="minKm"
-                    placeholder="Menor KM"
-                    className="mb-2"
-                    onChange={handleFilterChange}
-                  />
-                </div>
-                <div className="col-6">
-                  <Form.Control
-                    type="number"
-                    name="maxPrice"
-                    placeholder="Maior Valor"
-                    className="mb-2"
-                    onChange={handleFilterChange}
-                  />
-                  <Form.Control
-                    type="number"
-                    name="maxYear"
-                    placeholder="Ano Final"
-                    className="mb-2"
-                    onChange={handleFilterChange}
-                  />
-                  <Form.Control
-                    type="number"
-                    name="maxKm"
-                    placeholder="Maior KM"
-                    className="mb-2"
-                    onChange={handleFilterChange}
-                  />
-                </div>
-              </div>
-              <Button variant="dark" className="w-100" onClick={applyFilters}>
-                Pesquisar
-              </Button>
-            </div>
-          </aside>
+        <Button
+          variant="dark"
+          className="d-md-none mb-3"
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          <FaFilter /> Filtrar Veículos
+        </Button>
 
-          <div className="col-lg-9 col-md-8">
-            {filteredVehicles.length === 0 ? (
-              <p className="text-center">Nenhum veículo encontrado.</p>
-            ) : (
-              <div className="row">
-                {filteredVehicles.map((veiculo) => (
-                  <div key={veiculo.id} className="col-md-4 mb-4">
-                    <div className="card shadow-sm h-100 d-flex flex-column">
-                      <img
-                        src={`${API_BASE_URL}${veiculo.images?.[0]}`}
-                        className="card-img-top"
-                        alt={veiculo.carName}
-                      />
-                      <div className="card-body text-center d-flex flex-column">
-                        <h5>{veiculo.carName}</h5>
-                        <p>
-                          {veiculo.model} - {veiculo.year} - {veiculo.mileage}{" "}
-                          km
-                        </p>
-                        <div className="mt-auto d-flex justify-content-between gap-2">
-                          <Button variant="dark" size="sm">
-                            Detalhes
-                          </Button>
-                          <Button
-                            variant="success"
-                            size="sm"
-                            href={`https://wa.me/?text=Olá, estou interessado no ${veiculo.carName}`}
-                          >
-                            <FaWhatsapp /> Fale Conosco
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+        <div className="row">
+          {showFilters && (
+            <aside className="col-lg-3 col-md-4 mb-4">
+              <div className="p-3 bg-white shadow-sm rounded">
+                <h5>Filtrar Veículos</h5>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  placeholder="Nome"
+                  className="mb-2 form-control-sm"
+                  onChange={handleFilterChange}
+                />
+                <Form.Control
+                  type="text"
+                  name="model"
+                  placeholder="Modelo"
+                  className="mb-2 form-control-sm"
+                  onChange={handleFilterChange}
+                />
+                <Button variant="dark" className="w-100" onClick={applyFilters}>
+                  Pesquisar
+                </Button>
               </div>
-            )}
-          </div>
+            </aside>
+          )}
         </div>
       </div>
+
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                <div className="col-md-6 text-center">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      <Carousel.Item>
+                        <img
+                          src={mainImage}
+                          className="d-block w-100 rounded"
+                          alt="Imagem principal"
+                          style={{ maxHeight: "300px", objectFit: "cover" }}
+                        />
+                      </Carousel.Item>
+                    </Carousel>
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Modal.Body>
+          </>
+        )}
+      </Modal>
     </section>
   );
 }
