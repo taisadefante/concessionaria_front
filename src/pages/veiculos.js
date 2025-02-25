@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
-
 import API_BASE_URL from "../services/api";
 
 function Veiculos() {
@@ -15,6 +14,7 @@ function Veiculos() {
   });
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [mainImage, setMainImage] = useState(""); // Estado para a imagem principal
 
   useEffect(() => {
     fetchVehicles();
@@ -64,12 +64,18 @@ function Veiculos() {
 
   const handleShowModal = (veiculo) => {
     setSelectedVehicle(veiculo);
+    if (veiculo?.images?.length > 0) {
+      setMainImage(`${API_BASE_URL}${veiculo.images[0]}`);
+    } else {
+      setMainImage(""); // Caso não tenha imagens
+    }
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedVehicle(null);
+    setMainImage(""); // Resetar a imagem principal ao fechar
   };
 
   const generateWhatsAppLink = (veiculo) => {
@@ -149,159 +155,101 @@ function Veiculos() {
             </div>
           </aside>
 
-          {/* Lista de Veículos */}
-          <div className="col-lg-9 col-md-8 col-sm-12">
-            {filteredVehicles.length === 0 ? (
-              <p className="text-center">Nenhum veículo encontrado.</p>
-            ) : (
-              <div className="row">
-                {filteredVehicles.map((veiculo) => (
-                  <div key={veiculo.id} className="col-md-4 mb-4">
-                    <div className="card shadow-sm">
-                      {veiculo.images?.length > 0 ? (
+          {/* Modal de Detalhes */}
+          <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+            {selectedVehicle && (
+              <>
+                <Modal.Header closeButton>
+                  <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div className="row">
+                    {/* 🔹 Coluna da Imagem Principal */}
+                    <div className="col-md-6 text-center">
+                      {mainImage ? (
                         <img
-                          src={`${API_BASE_URL}${veiculo.images[0]}`}
-                          className="card-img-top"
-                          alt={veiculo.carName}
+                          src={mainImage}
+                          className="img-fluid rounded"
+                          alt={selectedVehicle.carName}
                           style={{
-                            width: "100%",
-                            height: "180px",
+                            maxHeight: "300px",
                             objectFit: "cover",
+                            width: "100%",
                           }}
                         />
                       ) : (
                         <div
                           className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                          style={{ height: "180px" }}
+                          style={{ height: "300px" }}
                         >
                           Sem Imagem
                         </div>
                       )}
 
-                      <div className="card-body text-center">
-                        <h5 className="card-title">{veiculo.carName}</h5>
-                        <p className="card-text">
-                          {veiculo.model} - {veiculo.year} - {veiculo.color}
-                        </p>
-                        <p className="fw-bold text-danger">
-                          R$ {veiculo.price.toLocaleString()}
-                        </p>
-
-                        <div className="d-flex justify-content-center gap-2">
-                          <button
-                            className="btn btn-dark btn-sm"
-                            onClick={() => handleShowModal(veiculo)}
-                          >
-                            Detalhes
-                          </button>
-                          <a
-                            href={generateWhatsAppLink(veiculo)}
-                            className="btn btn-success btn-sm d-flex align-items-center"
-                          >
-                            <FaWhatsapp className="me-1" /> WhatsApp
-                          </a>
-                        </div>
+                      {/* 🔹 Miniaturas das Imagens */}
+                      <div className="d-flex justify-content-center mt-3">
+                        {selectedVehicle.images?.map((img, index) => (
+                          <img
+                            key={index}
+                            src={`${API_BASE_URL}${img}`}
+                            alt={`Imagem ${index + 1}`}
+                            className="img-thumbnail mx-1"
+                            style={{
+                              width: "60px",
+                              height: "60px",
+                              objectFit: "cover",
+                              cursor: "pointer",
+                              border:
+                                mainImage === `${API_BASE_URL}${img}`
+                                  ? "2px solid #007bff"
+                                  : "none",
+                            }}
+                            onClick={() =>
+                              setMainImage(`${API_BASE_URL}${img}`)
+                            }
+                          />
+                        ))}
                       </div>
                     </div>
+
+                    {/* 🔹 Coluna com Informações do Veículo */}
+                    <div className="col-md-6">
+                      <p>
+                        <strong>Modelo:</strong> {selectedVehicle.model}
+                      </p>
+                      <p>
+                        <strong>Marca:</strong> {selectedVehicle.brand}
+                      </p>
+                      <p>
+                        <strong>Ano:</strong> {selectedVehicle.year}
+                      </p>
+                      <p>
+                        <strong>Cor:</strong> {selectedVehicle.color}
+                      </p>
+                      <p>
+                        <strong>KM:</strong> {selectedVehicle.mileage} km
+                      </p>
+                      <p>
+                        <strong>Opcionais:</strong>{" "}
+                        {selectedVehicle.options || "Nenhum"}
+                      </p>
+                      <p className="fw-bold text-danger">
+                        <strong>Preço:</strong> R$ {selectedVehicle.price}
+                      </p>
+                      <a
+                        href={generateWhatsAppLink(selectedVehicle)}
+                        className="btn btn-success w-100"
+                      >
+                        <FaWhatsapp className="me-1" /> Fale Conosco
+                      </a>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </Modal.Body>
+              </>
             )}
-          </div>
+          </Modal>
         </div>
       </div>
-
-      {/* Modal de Detalhes */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        {selectedVehicle && (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="row">
-                {/* 🔹 Coluna da Imagem Principal */}
-                <div className="col-md-6 text-center">
-                  {mainImage ? (
-                    <img
-                      src={mainImage}
-                      className="img-fluid rounded"
-                      alt={selectedVehicle.carName}
-                      style={{
-                        maxHeight: "300px",
-                        objectFit: "cover",
-                        width: "100%",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                      style={{ height: "300px" }}
-                    >
-                      Sem Imagem
-                    </div>
-                  )}
-
-                  {/* 🔹 Miniaturas das Imagens */}
-                  <div className="d-flex justify-content-center mt-3">
-                    {selectedVehicle.images?.map((img, index) => (
-                      <img
-                        key={index}
-                        src={`${API_BASE_URL}${img}`}
-                        alt={`Imagem ${index + 1}`}
-                        className="img-thumbnail mx-1"
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                          cursor: "pointer",
-                          border:
-                            mainImage === `${API_BASE_URL}${img}`
-                              ? "2px solid #007bff"
-                              : "none",
-                        }}
-                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* 🔹 Coluna com Informações do Veículo */}
-                <div className="col-md-6">
-                  <p>
-                    <strong>Modelo:</strong> {selectedVehicle.model}
-                  </p>
-                  <p>
-                    <strong>Marca:</strong> {selectedVehicle.brand}
-                  </p>
-                  <p>
-                    <strong>Ano:</strong> {selectedVehicle.year}
-                  </p>
-                  <p>
-                    <strong>Cor:</strong> {selectedVehicle.color}
-                  </p>
-                  <p>
-                    <strong>KM:</strong> {selectedVehicle.mileage} km
-                  </p>
-                  <p>
-                    <strong>Opcionais:</strong>{" "}
-                    {selectedVehicle.options || "Nenhum"}
-                  </p>
-                  <p className="fw-bold text-danger">
-                    <strong>Preço:</strong> R$ {selectedVehicle.price}
-                  </p>
-                  <a
-                    href={`https://wa.me/21988359825?text=Olá, estou interessado no veículo: ${selectedVehicle.carName} (${selectedVehicle.year}).`}
-                    className="btn btn-success w-100"
-                  >
-                    <FaWhatsapp className="me-1" /> Fale Conosco
-                  </a>
-                </div>
-              </div>
-            </Modal.Body>
-          </>
-        )}
-      </Modal>
     </section>
   );
 }
