@@ -120,11 +120,11 @@ function Veiculos() {
           <div className="card card-body mb-4">
             <div className="row">
               {[
-                { key: "nome", label: "Nome" },
-                { key: "marca", label: "Marca" },
-                { key: "modelo", label: "Modelo" },
-                { key: "ano", label: "Ano" },
-                { key: "cor", label: "Cor" },
+                { key: "carName", label: "Nome" },
+                { key: "brand", label: "Marca" },
+                { key: "model", label: "Modelo" },
+                { key: "year", label: "Ano" },
+                { key: "color", label: "Cor" },
               ].map((filter) => (
                 <div key={filter.key} className="col-md-2">
                   <Form.Group>
