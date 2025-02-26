@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Table, Alert, Button, Carousel } from "react-bootstrap";
+import { Table, Alert, Button, Carousel, Card } from "react-bootstrap";
 import VeiculoForm from "../components/VeiculoForm";
 import API_BASE_URL from "../services/api";
 
@@ -44,14 +44,12 @@ function AdmVeiculos() {
         setEditingVeiculo={setEditingVeiculo}
       />
 
-      <div className="table-responsive">
-        <Table
-          striped
-          bordered
-          hover
-          className="text-center mt-4"
-          style={{ width: "100%" }}
-        >
+      {/* ✅ Exibição da tabela apenas em telas médias e grandes */}
+      <div
+        className="table-responsive d-none d-md-block"
+        style={{ overflowX: "auto" }}
+      >
+        <Table striped bordered hover className="text-center mt-4">
           <thead className="table-dark">
             <tr>
               <th>Imagens</th>
@@ -72,7 +70,11 @@ function AdmVeiculos() {
               <tr key={veiculo.id}>
                 <td>
                   {veiculo.images?.length > 0 ? (
-                    <Carousel indicators={false} interval={null}>
+                    <Carousel
+                      indicators={false}
+                      interval={null}
+                      style={{ width: "100px" }}
+                    >
                       {veiculo.images.map((img, index) => (
                         <Carousel.Item key={index}>
                           <img
@@ -80,7 +82,11 @@ function AdmVeiculos() {
                             width="100"
                             height="70"
                             alt={`Veículo ${index + 1}`}
-                            style={{ objectFit: "cover", borderRadius: "5px" }}
+                            style={{
+                              objectFit: "cover",
+                              borderRadius: "5px",
+                              width: "100%",
+                            }}
                           />
                         </Carousel.Item>
                       ))}
@@ -89,8 +95,12 @@ function AdmVeiculos() {
                     <div
                       style={{
                         width: "100px",
-                        height: "100px",
+                        height: "70px",
                         backgroundColor: "#ccc",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "5px",
                       }}
                     >
                       Sem Imagem
@@ -107,24 +117,97 @@ function AdmVeiculos() {
                 <td>{veiculo.color}</td>
                 <td>{veiculo.options || "Nenhum"}</td>
                 <td>
-                  <Button
-                    variant="warning"
-                    className="me-2"
-                    onClick={() => setEditingVeiculo(veiculo)}
-                  >
-                    <FaEdit />
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={() => handleDelete(veiculo.id)}
-                  >
-                    <FaTrash />
-                  </Button>
+                  <div className="d-flex flex-wrap gap-2 justify-content-center">
+                    <Button
+                      variant="warning"
+                      onClick={() => setEditingVeiculo(veiculo)}
+                      style={{ padding: "5px 10px" }}
+                    >
+                      <FaEdit />
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDelete(veiculo.id)}
+                      style={{ padding: "5px 10px" }}
+                    >
+                      <FaTrash />
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
+      </div>
+
+      {/* ✅ Exibição em cards apenas em telas pequenas */}
+      <div className="d-md-none">
+        {veiculos.map((veiculo) => (
+          <Card key={veiculo.id} className="mb-3">
+            {veiculo.images?.length > 0 ? (
+              <Carousel indicators={false} interval={null}>
+                {veiculo.images.map((img, index) => (
+                  <Carousel.Item key={index}>
+                    <img
+                      src={`${API_BASE_URL}${img}`}
+                      className="d-block w-100"
+                      style={{
+                        height: "200px",
+                        objectFit: "cover",
+                        borderTopLeftRadius: "10px",
+                        borderTopRightRadius: "10px",
+                      }}
+                      alt={`Veículo ${index + 1}`}
+                    />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            ) : (
+              <div
+                style={{
+                  height: "200px",
+                  backgroundColor: "#ccc",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderTopLeftRadius: "10px",
+                  borderTopRightRadius: "10px",
+                }}
+              >
+                Sem Imagem
+              </div>
+            )}
+            <Card.Body>
+              <Card.Title>{veiculo.carName}</Card.Title>
+              <Card.Text>
+                <strong>Preço:</strong> R$ {veiculo.price.toLocaleString()}{" "}
+                <br />
+                <strong>Ano:</strong> {veiculo.year} <br />
+                <strong>Marca:</strong> {veiculo.brand} <br />
+                <strong>Modelo:</strong> {veiculo.model} <br />
+                <strong>Quilometragem:</strong> {veiculo.mileage} km <br />
+                <strong>Cor:</strong> {veiculo.color} <br />
+                <strong>Opcionais:</strong> {veiculo.options || "Nenhum"}
+              </Card.Text>
+              <div className="d-flex justify-content-between">
+                <Button
+                  variant="warning"
+                  onClick={() => setEditingVeiculo(veiculo)}
+                  style={{ padding: "5px 10px" }}
+                >
+                  <FaEdit />
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleDelete(veiculo.id)}
+                  style={{ padding: "5px 10px" }}
+                >
+                  <FaTrash />
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        ))}
       </div>
     </div>
   );

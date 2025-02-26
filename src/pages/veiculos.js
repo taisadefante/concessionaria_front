@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Carousel, Form, Collapse } from "react-bootstrap";
 import { FaWhatsapp, FaFilter } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../services/api";
 
 function Veiculos() {
@@ -10,12 +11,14 @@ function Veiculos() {
   const [mainImage, setMainImage] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const navigate = useNavigate();
+
   const [filters, setFilters] = useState({
-    name: "",
-    brand: "",
-    model: "",
-    year: "",
-    color: "",
+    nome: "",
+    marca: "",
+    modelo: "",
+    ano: "",
+    cor: "",
   });
 
   useEffect(() => {
@@ -46,22 +49,22 @@ function Veiculos() {
   useEffect(() => {
     let filtered = veiculos;
 
-    if (filters.name) {
+    if (filters.nome) {
       filtered = filtered.filter((v) =>
-        v.carName.toLowerCase().includes(filters.name.toLowerCase())
+        v.carName.toLowerCase().includes(filters.nome.toLowerCase())
       );
     }
-    if (filters.brand) {
-      filtered = filtered.filter((v) => v.brand === filters.brand);
+    if (filters.marca) {
+      filtered = filtered.filter((v) => v.brand === filters.marca);
     }
-    if (filters.model) {
-      filtered = filtered.filter((v) => v.model === filters.model);
+    if (filters.modelo) {
+      filtered = filtered.filter((v) => v.model === filters.modelo);
     }
-    if (filters.year) {
-      filtered = filtered.filter((v) => v.year.toString() === filters.year);
+    if (filters.ano) {
+      filtered = filtered.filter((v) => v.year.toString() === filters.ano);
     }
-    if (filters.color) {
-      filtered = filtered.filter((v) => v.color === filters.color);
+    if (filters.cor) {
+      filtered = filtered.filter((v) => v.color === filters.cor);
     }
 
     setFilteredVehicles(filtered);
@@ -78,6 +81,24 @@ function Veiculos() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedVehicle(null);
+  };
+
+  const generateWhatsAppLink = (veiculo) => {
+    const phoneNumber = "21988359825";
+    const message = `Olá, estou interessado no veículo: ${veiculo.carName} (${
+      veiculo.year
+    }). 🚗 Marca: ${veiculo.brand} 📅 Ano: ${
+      veiculo.year
+    } 🏁 Quilometragem: ${veiculo.mileage.toLocaleString()} km 💰 Preço: R$ ${veiculo.price.toLocaleString()} 📌 Opcionais: ${
+      veiculo.options || "Nenhum"
+    }`;
+
+    return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  };
+
+  const goToVehiclesPage = () => {
+    navigate("/veiculos");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -98,20 +119,24 @@ function Veiculos() {
         <Collapse in={showFilters}>
           <div className="card card-body mb-4">
             <div className="row">
-              {["name", "brand", "model", "year", "color"].map((filter) => (
-                <div key={filter} className="col-md-2">
+              {[
+                { key: "nome", label: "Nome" },
+                { key: "marca", label: "Marca" },
+                { key: "modelo", label: "Modelo" },
+                { key: "ano", label: "Ano" },
+                { key: "cor", label: "Cor" },
+              ].map((filter) => (
+                <div key={filter.key} className="col-md-2">
                   <Form.Group>
-                    <Form.Label>
-                      {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                    </Form.Label>
+                    <Form.Label>{filter.label}</Form.Label>
                     <Form.Control
                       as="select"
-                      name={filter}
-                      value={filters[filter]}
+                      name={filter.key}
+                      value={filters[filter.key]}
                       onChange={handleFilterChange}
                     >
                       <option value="">Todos</option>
-                      {Array.from(new Set(veiculos.map((v) => v[filter])))
+                      {Array.from(new Set(veiculos.map((v) => v[filter.key])))
                         .filter(Boolean)
                         .map((value) => (
                           <option key={value} value={value}>
@@ -143,21 +168,18 @@ function Veiculos() {
                     <p className="text-muted">
                       {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
                     </p>
-                    <div className="mt-auto d-flex justify-content-between">
-                      <Button
-                        variant="dark"
-                        size="sm"
+                    <div className="d-flex justify-content-center gap-2">
+                      <button
+                        className="btn btn-dark btn-sm"
                         onClick={() => handleShowModal(veiculo)}
                       >
                         Detalhes
-                      </Button>
+                      </button>
                       <a
-                        href={`https://wa.me/21988359825?text=Olá, estou interessado no ${veiculo.carName}`}
-                        className="btn btn-success btn-sm"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={generateWhatsAppLink(veiculo)}
+                        className="btn btn-success btn-sm d-flex align-items-center"
                       >
-                        <FaWhatsapp className="me-1" /> Fale Conosco
+                        <FaWhatsapp className="me-1" /> WhatsApp
                       </a>
                     </div>
                   </div>
@@ -179,20 +201,15 @@ function Veiculos() {
         <Modal.Body>
           {selectedVehicle ? (
             <div className="row">
+              {/* Imagem Principal */}
               <div className="col-md-6 text-center">
-                {selectedVehicle.images?.length > 0 ? (
-                  <Carousel>
-                    {selectedVehicle.images.map((img, index) => (
-                      <Carousel.Item key={index}>
-                        <img
-                          src={`${API_BASE_URL}${img}`}
-                          className="d-block w-100 rounded"
-                          alt={`Imagem ${index + 1}`}
-                          style={{ maxHeight: "300px", objectFit: "cover" }}
-                        />
-                      </Carousel.Item>
-                    ))}
-                  </Carousel>
+                {mainImage ? (
+                  <img
+                    src={mainImage}
+                    className="img-fluid rounded"
+                    alt="Imagem principal"
+                    style={{ maxHeight: "300px", objectFit: "cover" }}
+                  />
                 ) : (
                   <div
                     className="bg-secondary text-white d-flex align-items-center justify-content-center"
@@ -202,6 +219,7 @@ function Veiculos() {
                   </div>
                 )}
 
+                {/* Miniaturas */}
                 <div className="d-flex justify-content-center mt-3">
                   {selectedVehicle.images?.map((img, index) => (
                     <img
@@ -225,6 +243,7 @@ function Veiculos() {
                 </div>
               </div>
 
+              {/* Informações do veículo */}
               <div className="col-md-6">
                 <p>
                   <strong>Marca:</strong> {selectedVehicle.brand}
