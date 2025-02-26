@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Carousel, Form, Collapse } from "react-bootstrap";
+import { Modal, Button, Form, Collapse, Carousel } from "react-bootstrap";
 import { FaWhatsapp, FaFilter } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../services/api";
@@ -14,11 +14,11 @@ function Veiculos() {
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
-    nome: "",
-    marca: "",
-    modelo: "",
-    ano: "",
-    cor: "",
+    carName: "",
+    brand: "",
+    model: "",
+    year: "",
+    color: "",
   });
 
   useEffect(() => {
@@ -30,43 +30,47 @@ function Veiculos() {
       const res = await fetch(`${API_BASE_URL}/api/vehicles`);
       if (!res.ok) throw new Error(`Erro ao buscar veículos: ${res.status}`);
       const data = await res.json();
+      console.log("📌 Dados recebidos da API:", data);
       setVeiculos(data);
       setFilteredVehicles(data);
     } catch (error) {
-      console.error("Erro ao buscar veículos:", error);
+      console.error("❌ Erro ao buscar veículos:", error);
       setVeiculos([]);
       setFilteredVehicles([]);
     }
   };
 
-  // Atualizar filtros
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters, [name]: value };
+      console.log("🔍 Filtros atualizados:", updatedFilters);
+      return updatedFilters;
+    });
   };
 
-  // Aplicar filtros
   useEffect(() => {
-    let filtered = veiculos;
+    let filtered = [...veiculos];
 
-    if (filters.nome) {
+    if (filters.carName) {
       filtered = filtered.filter((v) =>
-        v.carName.toLowerCase().includes(filters.nome.toLowerCase())
+        v.carName.toLowerCase().includes(filters.carName.toLowerCase())
       );
     }
-    if (filters.marca) {
-      filtered = filtered.filter((v) => v.brand === filters.marca);
+    if (filters.brand) {
+      filtered = filtered.filter((v) => v.brand === filters.brand);
     }
-    if (filters.modelo) {
-      filtered = filtered.filter((v) => v.model === filters.modelo);
+    if (filters.model) {
+      filtered = filtered.filter((v) => v.model === filters.model);
     }
-    if (filters.ano) {
-      filtered = filtered.filter((v) => v.year.toString() === filters.ano);
+    if (filters.year) {
+      filtered = filtered.filter((v) => v.year.toString() === filters.year);
     }
-    if (filters.cor) {
-      filtered = filtered.filter((v) => v.color === filters.cor);
+    if (filters.color) {
+      filtered = filtered.filter((v) => v.color === filters.color);
     }
 
+    console.log("🔍 Veículos filtrados:", filtered);
     setFilteredVehicles(filtered);
   }, [filters, veiculos]);
 
@@ -94,11 +98,6 @@ function Veiculos() {
     }`;
 
     return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  };
-
-  const goToVehiclesPage = () => {
-    navigate("/veiculos");
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -156,14 +155,14 @@ function Veiculos() {
           {filteredVehicles.length > 0 ? (
             filteredVehicles.map((veiculo) => (
               <div key={veiculo.id} className="col-md-4 mb-4">
-                <div className="card shadow-sm h-100 d-flex flex-column">
+                <div className="card shadow-sm h-100">
                   <img
                     src={`${API_BASE_URL}${veiculo.images?.[0]}`}
                     className="card-img-top"
                     alt={veiculo.carName}
                     style={{ objectFit: "cover", height: "200px" }}
                   />
-                  <div className="card-body text-center d-flex flex-column">
+                  <div className="card-body text-center">
                     <h5 className="fw-bold">{veiculo.carName}</h5>
                     <p className="text-muted">
                       {veiculo.model} - {veiculo.year} - {veiculo.mileage} km
@@ -177,7 +176,7 @@ function Veiculos() {
                       </button>
                       <a
                         href={generateWhatsAppLink(veiculo)}
-                        className="btn btn-success btn-sm d-flex align-items-center"
+                        className="btn btn-success btn-sm"
                       >
                         <FaWhatsapp className="me-1" /> WhatsApp
                       </a>
@@ -191,95 +190,98 @@ function Veiculos() {
           )}
         </div>
       </div>
-      {/* MODAL DE DETALHES */}
-      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {selectedVehicle?.carName || "Detalhes do Veículo"}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedVehicle ? (
-            <div className="row">
-              {/* Imagem Principal */}
-              <div className="col-md-6 text-center">
-                {mainImage ? (
-                  <img
-                    src={mainImage}
-                    className="img-fluid rounded"
-                    alt="Imagem principal"
-                    style={{ maxHeight: "300px", objectFit: "cover" }}
-                  />
-                ) : (
-                  <div
-                    className="bg-secondary text-white d-flex align-items-center justify-content-center"
-                    style={{ height: "300px" }}
-                  >
-                    Sem Imagem
-                  </div>
-                )}
 
-                {/* Miniaturas */}
-                <div className="d-flex justify-content-center mt-3">
-                  {selectedVehicle.images?.map((img, index) => (
-                    <img
-                      key={index}
-                      src={`${API_BASE_URL}${img}`}
-                      alt={`Imagem ${index + 1}`}
-                      className="img-thumbnail mx-1"
-                      style={{
-                        width: "60px",
-                        height: "60px",
-                        objectFit: "cover",
-                        cursor: "pointer",
-                        border:
-                          mainImage === `${API_BASE_URL}${img}`
-                            ? "2px solid #007bff"
-                            : "none",
-                      }}
-                      onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
-                    />
-                  ))}
+      {/* MODAL DE DETALHES COM MINIATURAS E BOTÃO "FALE CONOSCO" */}
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
+        {selectedVehicle && (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>{selectedVehicle.carName}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="row">
+                {/* 🔹 Carrossel de Imagens */}
+                <div className="col-md-6 text-center">
+                  {selectedVehicle.images?.length > 0 ? (
+                    <Carousel>
+                      <Carousel.Item>
+                        <img
+                          src={mainImage}
+                          className="d-block w-100 rounded"
+                          alt="Imagem principal"
+                          style={{ maxHeight: "300px", objectFit: "cover" }}
+                        />
+                      </Carousel.Item>
+                    </Carousel>
+                  ) : (
+                    <div
+                      className="bg-secondary text-white d-flex align-items-center justify-content-center"
+                      style={{ height: "300px" }}
+                    >
+                      Sem Imagem
+                    </div>
+                  )}
+
+                  {/* 🔹 Miniaturas das Imagens */}
+                  <div className="d-flex justify-content-center mt-3">
+                    {selectedVehicle.images?.map((img, index) => (
+                      <img
+                        key={index}
+                        src={`${API_BASE_URL}${img}`}
+                        alt={`Imagem ${index + 1}`}
+                        className="img-thumbnail mx-1"
+                        style={{
+                          width: "60px",
+                          height: "60px",
+                          objectFit: "cover",
+                          cursor: "pointer",
+                          border:
+                            mainImage === `${API_BASE_URL}${img}`
+                              ? "2px solid #007bff"
+                              : "none",
+                        }}
+                        onClick={() => setMainImage(`${API_BASE_URL}${img}`)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* 🔹 Coluna com Informações do Veículo */}
+                <div className="col-md-6">
+                  <p>
+                    <strong>Marca:</strong> {selectedVehicle.brand}
+                  </p>
+                  <p>
+                    <strong>Modelo:</strong> {selectedVehicle.model}
+                  </p>
+                  <p>
+                    <strong>Ano:</strong> {selectedVehicle.year}
+                  </p>
+                  <p>
+                    <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
+                  </p>
+                  <p>
+                    <strong>Cor:</strong> {selectedVehicle.color}
+                  </p>
+                  <p>
+                    <strong>Opcionais:</strong>{" "}
+                    {selectedVehicle.options || "Nenhum"}
+                  </p>
+                  <p>
+                    <strong>Descrição:</strong>{" "}
+                    {selectedVehicle.description || "Não informada"}
+                  </p>
+                  <a
+                    href={generateWhatsAppLink(selectedVehicle)}
+                    className="btn btn-success w-100 mt-3"
+                  >
+                    <FaWhatsapp className="me-1" /> Fale Conosco
+                  </a>
                 </div>
               </div>
-
-              {/* Informações do veículo */}
-              <div className="col-md-6">
-                <p>
-                  <strong>Marca:</strong> {selectedVehicle.brand}
-                </p>
-                <p>
-                  <strong>Modelo:</strong> {selectedVehicle.model}
-                </p>
-                <p>
-                  <strong>Ano:</strong> {selectedVehicle.year}
-                </p>
-                <p>
-                  <strong>Quilometragem:</strong> {selectedVehicle.mileage} km
-                </p>
-                <p>
-                  <strong>Cor:</strong> {selectedVehicle.color}
-                </p>
-                <p>
-                  <strong>Opcionais:</strong>{" "}
-                  {selectedVehicle.options || "Nenhum"}
-                </p>
-                <p>
-                  <strong>Descrição:</strong>{" "}
-                  {selectedVehicle.description || "Não informada"}
-                </p>
-                <a
-                  href={`https://wa.me/21988359825?text=Olá, estou interessado no ${selectedVehicle.carName}`}
-                  className="btn btn-success w-100 mt-3"
-                >
-                  <FaWhatsapp className="me-1" /> Fale Conosco
-                </a>
-              </div>
-            </div>
-          ) : (
-            <p className="text-center">Carregando informações do veículo...</p>
-          )}
-        </Modal.Body>
+            </Modal.Body>
+          </>
+        )}
       </Modal>
     </section>
   );
