@@ -3,11 +3,17 @@ Este é um sistema web completo para uma concessionária, projetado para oferece
 
 📌 Funcionalidades Principais
 🛒 Para os Clientes
+
 ✅ Catálogo de Veículos – Página com exibição dinâmica de todos os veículos cadastrados, incluindo imagens, nome, modelo, ano, quilometragem, cor e preço.
+
 ✅ Veículos em Destaque – Seção de destaque que exibe aleatoriamente os melhores veículos disponíveis.
+
 ✅ Filtros Avançados – Pesquisa refinada por preço, ano e quilometragem, ajudando os clientes a encontrar o veículo ideal.
+
 ✅ Modal de Detalhes – Exibição detalhada do veículo, incluindo carrossel de imagens, miniaturas interativas e todas as informações relevantes.
+
 ✅ Contato via WhatsApp – Opção "Fale Conosco" para iniciar negociações diretamente pelo WhatsApp.
+
 ✅ Design Responsivo – Interface 100% adaptada para desktop, tablets e celulares.
 
 🔧 Para Administradores (AdmVeiculos)
