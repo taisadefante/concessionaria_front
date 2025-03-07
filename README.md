@@ -1,70 +1,92 @@
-# Getting Started with Create React App
+🚗 Concessionária Web - Sistema Completo de Gestão de Veículos
+Este é um sistema web completo para uma concessionária, projetado para oferecer uma experiência moderna, intuitiva e eficiente tanto para os clientes quanto para a administração do negócio.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+📌 Funcionalidades Principais
+🛒 Para os Clientes
+✅ Catálogo de Veículos – Página com exibição dinâmica de todos os veículos cadastrados, incluindo imagens, nome, modelo, ano, quilometragem, cor e preço.
+✅ Veículos em Destaque – Seção de destaque que exibe aleatoriamente os melhores veículos disponíveis.
+✅ Filtros Avançados – Pesquisa refinada por preço, ano e quilometragem, ajudando os clientes a encontrar o veículo ideal.
+✅ Modal de Detalhes – Exibição detalhada do veículo, incluindo carrossel de imagens, miniaturas interativas e todas as informações relevantes.
+✅ Contato via WhatsApp – Opção "Fale Conosco" para iniciar negociações diretamente pelo WhatsApp.
+✅ Design Responsivo – Interface 100% adaptada para desktop, tablets e celulares.
 
-## Available Scripts
+🔧 Para Administradores (AdmVeiculos)
+🔹 Autenticação Segura – Apenas usuários logados podem acessar o painel administrativo.
+🔹 CRUD de Veículos – Administrador pode adicionar, editar, excluir e pausar veículos.
+🔹 Gerenciamento de Imagens – Upload de imagens para exibição no catálogo.
+🔹 Proteção de Rotas – Usuários não autenticados são redirecionados para a página de login.
 
-In the project directory, you can run:
+🛠 Tecnologias Utilizadas
+Frontend
+⚛ React.js – Interface dinâmica e performática.
+🎨 Bootstrap – Estilização moderna e responsiva.
+Backend
+🚀 Node.js + Express.js – API rápida e escalável.
+🗄 PostgreSQL + Prisma ORM – Banco de dados eficiente e seguro.
+Integrações
+💬 WhatsApp API – Contato direto com os clientes.
+📂 Estrutura do Projeto
+bash
+Copiar
+Editar
+/concessionaria-web
+│── frontend/               # Interface do usuário (React)
+│   ├── src/
+│   │   ├── components/      # Componentes reutilizáveis
+│   │   ├── pages/           # Páginas do sistema
+│   │   ├── services/        # Integração com API
+│   │   ├── assets/          # Imagens e ícones
+│   │   ├── styles/          # Arquivos CSS
+│
+│── backend/                # Servidor e API (Node.js)
+│   ├── src/
+│   │   ├── controllers/     # Lógica das requisições
+│   │   ├── models/          # Modelos do banco de dados
+│   │   ├── routes/          # Rotas da API
+│   │   ├── services/        # Integrações externas
+🚀 Como Executar o Projeto?
+1️⃣ Clonar o Repositório
+bash
+Copiar
+Editar
+git clone https://github.com/seu-usuario/concessionaria-web.git
+2️⃣ Instalar as Dependências
+Acesse a pasta do frontend e instale as dependências:
 
-### `npm start`
+bash
+Copiar
+Editar
+cd frontend
+npm install
+Depois, faça o mesmo no backend:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+bash
+Copiar
+Editar
+cd backend
+npm install
+3️⃣ Configurar o Banco de Dados
+Crie um arquivo .env na pasta backend e adicione as credenciais do banco PostgreSQL:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+bash
+Copiar
+Editar
+DATABASE_URL=postgres://usuario:senha@localhost:5432/concessionaria
+Depois, rode as migrações:
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+bash
+Copiar
+Editar
+npx prisma migrate dev
+4️⃣ Iniciar o Backend
+bash
+Copiar
+Editar
+cd backend
+npm start
+5️⃣ Iniciar o Frontend
+bash
+Copiar
+Editar
+cd frontend
+npm start
