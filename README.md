@@ -17,45 +17,42 @@ Este é um sistema web completo para uma concessionária, projetado para oferece
 ✅ Design Responsivo – Interface 100% adaptada para desktop, tablets e celulares.
 
 🔧 Para Administradores (AdmVeiculos)
+
 🔹 Autenticação Segura – Apenas usuários logados podem acessar o painel administrativo.
+
 🔹 CRUD de Veículos – Administrador pode adicionar, editar, excluir e pausar veículos.
+
 🔹 Gerenciamento de Imagens – Upload de imagens para exibição no catálogo.
+
 🔹 Proteção de Rotas – Usuários não autenticados são redirecionados para a página de login.
 
+
 🛠 Tecnologias Utilizadas
+
 Frontend
+
 ⚛ React.js – Interface dinâmica e performática.
+
 🎨 Bootstrap – Estilização moderna e responsiva.
 Backend
+
 🚀 Node.js + Express.js – API rápida e escalável.
+
 🗄 PostgreSQL + Prisma ORM – Banco de dados eficiente e seguro.
 Integrações
+
 💬 WhatsApp API – Contato direto com os clientes.
-📂 Estrutura do Projeto
-bash
-Copiar
-Editar
-/concessionaria-web
-│── frontend/               # Interface do usuário (React)
-│   ├── src/
-│   │   ├── components/      # Componentes reutilizáveis
-│   │   ├── pages/           # Páginas do sistema
-│   │   ├── services/        # Integração com API
-│   │   ├── assets/          # Imagens e ícones
-│   │   ├── styles/          # Arquivos CSS
-│
-│── backend/                # Servidor e API (Node.js)
-│   ├── src/
-│   │   ├── controllers/     # Lógica das requisições
-│   │   ├── models/          # Modelos do banco de dados
-│   │   ├── routes/          # Rotas da API
-│   │   ├── services/        # Integrações externas
+
+
+
 🚀 Como Executar o Projeto?
+
 1️⃣ Clonar o Repositório
 bash
 Copiar
 Editar
 git clone https://github.com/seu-usuario/concessionaria-web.git
+
 2️⃣ Instalar as Dependências
 Acesse a pasta do frontend e instale as dependências:
 
@@ -71,6 +68,7 @@ Copiar
 Editar
 cd backend
 npm install
+
 3️⃣ Configurar o Banco de Dados
 Crie um arquivo .env na pasta backend e adicione as credenciais do banco PostgreSQL:
 
@@ -84,12 +82,14 @@ bash
 Copiar
 Editar
 npx prisma migrate dev
+
 4️⃣ Iniciar o Backend
 bash
 Copiar
 Editar
 cd backend
 npm start
+
 5️⃣ Iniciar o Frontend
 bash
 Copiar
